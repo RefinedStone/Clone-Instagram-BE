@@ -1,5 +1,6 @@
 package com.example.cloneinstargram.feed.entity;
 
+import com.example.cloneinstargram.account.entity.Account;
 import com.example.cloneinstargram.feed.dto.FeedReqDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,8 +17,9 @@ public class Feed {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable = false)
-    private String nickname;
+    @ManyToOne
+    @JoinColumn(name = "nickname", nullable = false)
+    private Account account;
 
     @Column(nullable = false)
     private String content;
@@ -25,14 +27,20 @@ public class Feed {
     @Column(nullable = false)
     private String img;
 
+    public Feed(Account account, String content, String img) {
+        this.account = account;
+        this.content = content;
+        this.img = img;
+    }
+
     public Feed(FeedReqDto feedReqDto) {
-        this.nickname = feedReqDto.getNickname();
+        this.account = account;
         this.content = feedReqDto.getContent();
         this.img = feedReqDto.getImg();
     }
 
     public void update(FeedReqDto feedReqDto) {
-        this.nickname = feedReqDto.getNickname();
+        this.account = account;
         this.content = feedReqDto.getContent();
 //        this.img = s3FileName;
     }

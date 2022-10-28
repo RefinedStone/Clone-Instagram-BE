@@ -11,7 +11,7 @@ import com.example.cloneinstargram.feed.entity.Feed;
 import com.example.cloneinstargram.feed.repository.AwsurlRepository;
 import com.example.cloneinstargram.feed.repository.FeedRepository;
 import com.example.cloneinstargram.global.dto.GlobalResDto;
-import com.example.cloneinstargram.s3.StorageUtil;
+import com.example.cloneinstargram.s3utils.StorageUtil;
 import com.example.cloneinstargram.security.user.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

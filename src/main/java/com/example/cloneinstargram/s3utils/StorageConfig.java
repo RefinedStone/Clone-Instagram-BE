@@ -1,4 +1,4 @@
-package com.example.cloneinstargram.s3;
+package com.example.cloneinstargram.s3utils;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 public class StorageConfig {
     @Value("${cloud.aws.credentials.access-key}")
     private String accessKey;
-
     @Value("${cloud.aws.credentials.secret-key}")
     private String accessSecret;
     @Value("${cloud.aws.region.static}")

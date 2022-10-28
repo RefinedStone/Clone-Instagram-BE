@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.example.cloneinstargram.account.entity.Account;
 import com.example.cloneinstargram.account.repository.AccountRepository;
+import com.example.cloneinstargram.feed.dto.FeedDeleteResDto;
 import com.example.cloneinstargram.feed.dto.FeedReqDto;
 import com.example.cloneinstargram.feed.dto.FeedResDto;
 import com.example.cloneinstargram.feed.dto.FeedUpdateResDto;
@@ -37,7 +38,7 @@ public class FeedService {
         return new FeedUpdateResDto("수정완료", 200, feed.getContent(), nickname.getNickname());
     }
 
-    public FeedResDto deleteFeed(Long id) {
+    public FeedDeleteResDto deleteFeed(Long id) {
         Feed feed = feedRepository.findById(id)
                 .orElseThrow(() -> new NullPointerException("해당 피드가 존재하지 않습니다"));
 
@@ -55,6 +56,6 @@ public class FeedService {
             e.printStackTrace();
         }
         feedRepository.deleteById(id);
-        return new FeedResDto("삭제가 완료되었습니다", 200, feed.getContent(), account.getNickname(), feed.getImg());
+        return new FeedDeleteResDto("삭제가 완료되었습니다", 200);
     }
 }

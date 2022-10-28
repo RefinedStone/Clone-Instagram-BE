@@ -7,7 +7,6 @@ import com.example.cloneinstargram.global.dto.GlobalResDto;
 import com.example.cloneinstargram.jwt.util.JwtUtil;
 import com.example.cloneinstargram.security.user.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -44,4 +43,5 @@ public class AccountController {
     public String getMyInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return accountService.getMyInfo(userDetails).toString();
     }
+
 }

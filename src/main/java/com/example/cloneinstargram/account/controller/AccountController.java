@@ -39,10 +39,9 @@ public class AccountController {
     }
 
     // myPage 내 정보 가져오기
-    @GetMapping("/account/myinfo")
+    @GetMapping("/account")
     public String getMyInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return accountService.getMyInfo(userDetails).toString();
     }
-
 
 }

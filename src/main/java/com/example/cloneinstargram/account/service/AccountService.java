@@ -32,12 +32,14 @@ public class AccountService {
     public GlobalResDto signup(AccountReqDto accountReqDto) {
         // email 중복 검사
         if (accountRepository.findByEmail(accountReqDto.getEmail()).isPresent()) {
+            System.out.println("id overlap");
             throw new RuntimeException("Overlap Check");
         }
         accountReqDto.setEncodePwd(passwordEncoder.encode(accountReqDto.getPassword()));
         Account account = new Account(accountReqDto);
-
+        System.out.println(account.getEmail()+" signup success");
         accountRepository.save(account);
+
         return new GlobalResDto("Success signup", HttpStatus.OK.value());
     }
 
@@ -81,6 +83,7 @@ public class AccountService {
         myInfo
                 /*.append()*/
                 .append(userDetails.getAccount().getNickname());
+        System.out.println("myinfo: "+myInfo.toString());
         return myInfo;
 
     }

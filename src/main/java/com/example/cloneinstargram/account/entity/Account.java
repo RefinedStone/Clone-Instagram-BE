@@ -23,12 +23,12 @@ public class Account {
     @NotBlank
     private String password;
     @NotBlank
-    private String phoneNumber;
+    private String nickname;
 
     public Account(AccountReqDto accountReqDto) {
         this.email = accountReqDto.getEmail();
         this.password = accountReqDto.getPassword();
-        this.phoneNumber = accountReqDto.getPhoneNumber();
+        this.nickname = accountReqDto.getNickname();
     }
 
 }

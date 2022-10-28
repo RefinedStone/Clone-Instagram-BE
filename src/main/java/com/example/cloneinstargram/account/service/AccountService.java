@@ -33,7 +33,6 @@ public class AccountService {
         if(accountRepository.findByEmail(accountReqDto.getEmail()).isPresent()){
             throw new RuntimeException("Overlap Check");
         }
-
         accountReqDto.setEncodePwd(passwordEncoder.encode(accountReqDto.getPassword()));
         Account account = new Account(accountReqDto);
 

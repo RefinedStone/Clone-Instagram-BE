@@ -29,3 +29,6 @@ replay_pid*
 #My Ignore
 *.yml
 # End of https://www.toptal.com/developers/gitignore/api/java
+
+### IntelliJ IDEA ###
+/src/main/resources/application-aws.properties

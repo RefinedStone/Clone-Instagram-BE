@@ -33,15 +33,15 @@ public class Feed {
         this.img = img;
     }
 
-    public Feed(FeedReqDto feedReqDto) {
-        this.account = account;
-        this.content = feedReqDto.getContent();
-        this.img = feedReqDto.getImg();
-    }
+//    public Feed(FeedReqDto feedReqDto) {
+//        this.account = account;
+//        this.content = feedReqDto.getContent();
+//        this.img = feedReqDto.getImg();
+//    }
 
-    public void update(FeedReqDto feedReqDto) {
-        this.account = account;
-        this.content = feedReqDto.getContent();
+//    public void update(FeedReqDto feedReqDto) {
+//        this.account = account;
+//        this.content = feedReqDto.getContent();
 //        this.img = s3FileName;
-    }
+//    }
 }

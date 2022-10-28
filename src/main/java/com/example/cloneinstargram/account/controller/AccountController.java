@@ -33,9 +33,15 @@ public class AccountController {
     }
 
     @GetMapping("/issue/token")
-    public GlobalResDto issuedToken(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response){
+    public GlobalResDto issuedToken(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response) {
         response.addHeader(JwtUtil.ACCESS_TOKEN, jwtUtil.createToken(userDetails.getAccount().getEmail(), "Access"));
         return new GlobalResDto("Success IssuedToken", HttpStatus.OK.value());
+    }
+
+    // myPage 내 정보 가져오기
+    @GetMapping("/account")
+    public String getMyInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return accountService.getMyInfo(userDetails).toString();
     }
 
 }

@@ -14,12 +14,12 @@ public class AccountReqDto {
     @NotBlank
     private String password;
     @NotBlank
-    private String phoneNumber;
+    private String nickname;
 
-    public AccountReqDto(String email, String password, String phoneNumber) {
+    public AccountReqDto(String email, String password, String nickname) {
         this.email = email;
         this.password = password;
-        this.phoneNumber = phoneNumber;
+        this.nickname = nickname;
     }
 
     public void setEncodePwd(String encodePwd) {

@@ -28,11 +28,11 @@ public class Comment extends Timestamped {
     @JoinColumn(name = "feed_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-    private Feeds feeds;
+    private Feed feed;
 
-    public Comment(CommentRequestDto commentRequestDto, Feeds feeds, Account account) {
+    public Comment(CommentRequestDto commentRequestDto, Feed feed, Account account) {
         this.comment = commentRequestDto.getComment ();
-        this.feeds = feeds;
+        this.feed = feed;
         this.account = account;
     }
 }

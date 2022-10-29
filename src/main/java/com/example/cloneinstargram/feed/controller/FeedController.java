@@ -48,9 +48,11 @@ public class FeedController {
     }
 
     @PostMapping("/feed")
-    public GlobalResDto addFeed(@RequestPart MultipartFile image,
-                                @RequestPart String content,
+    public GlobalResDto addFeed(@RequestPart(required = false, value= "image") MultipartFile image,
+                                @RequestParam(required = false, value= "content") String content,
                                 @AuthenticationPrincipal UserDetailsImpl userDetails){
+        System.out.println("이미지: " + image);
+        System.out.println("content: " + content);
         return feedService.addFeed(image, content, userDetails);
     }
 

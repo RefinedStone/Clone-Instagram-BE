@@ -29,11 +29,9 @@ public class StorageUtil {
         return fileName;
     }
 
-    public String deleteFile(String fileName) {
+    public void deleteFile(String fileName) {
         s3Client.deleteObject(bucketName, fileName);
-        return fileName + " removed ...";
     }
-
 
     private File convertMultiPartFileToFile(MultipartFile file) {
         File convertedFile = new File(file.getOriginalFilename());

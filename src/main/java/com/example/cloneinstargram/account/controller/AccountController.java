@@ -4,6 +4,7 @@ import com.example.cloneinstargram.account.dto.AccountReqDto;
 import com.example.cloneinstargram.account.dto.LoginReqDto;
 import com.example.cloneinstargram.account.service.AccountService;
 import com.example.cloneinstargram.global.dto.GlobalResDto;
+import com.example.cloneinstargram.global.dto.ResponseDto;
 import com.example.cloneinstargram.jwt.util.JwtUtil;
 import com.example.cloneinstargram.security.user.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +34,21 @@ public class AccountController {
     }
 
     @GetMapping("/issue/token")
-    public GlobalResDto issuedToken(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response){
+    public GlobalResDto issuedToken(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response) {
         response.addHeader(JwtUtil.ACCESS_TOKEN, jwtUtil.createToken(userDetails.getAccount().getEmail(), "Access"));
         return new GlobalResDto("Success IssuedToken", HttpStatus.OK.value());
     }
+
+    // myPage 내 정보 가져오기
+    @GetMapping("/account/myinfo")
+    public ResponseDto<?> getMyInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseDto.success(accountService.getMyInfo(userDetails).toString());
+    }
+
+    @PostMapping(value = "/logout")
+    public ResponseDto<?> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception {
+        return accountService.logout(userDetails.getAccount().getEmail());
+    }
+
 
 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -57,12 +58,14 @@ public class FeedController {
     }
 
     @GetMapping("/feed/show")
-    public FeedsResDto showFeeds(){
+    public List<FeedoneResDto> showFeeds(){
+        System.out.println("==========컨트롤러 지나는중==========");
         return feedService.showFeeds();
     }
 
     @GetMapping("/feed/show/{feedId}")
     public FeedoneResDto showFeed(@PathVariable Long feedId){
+        System.out.println("==========컨트롤러 지나는중==========");
         return feedService.showFeed(feedId);
     }
 }

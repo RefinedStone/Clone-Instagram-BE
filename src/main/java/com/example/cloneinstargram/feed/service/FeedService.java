@@ -72,14 +72,14 @@ public class FeedService {
     }
 
     @Transactional(readOnly = true)
-    public FeedsResDto showFeeds() {
+    public List<FeedoneResDto> showFeeds() {
         Awsurl awsUrl = awsurlRepository.findById(1L).orElseThrow(
                 () -> new RuntimeException("S3Url이 비어있어요")
         );
         List<Feed> feeds = feedRepository.findAll();
         List<FeedoneResDto> feedoneResDtos = new LinkedList<>();
         for(Feed feed: feeds)   feedoneResDtos.add(new FeedoneResDto(feed, awsUrl));
-        return new FeedsResDto(feedoneResDtos);
+        return feedoneResDtos;
     }
 
     @Transactional(readOnly = true)

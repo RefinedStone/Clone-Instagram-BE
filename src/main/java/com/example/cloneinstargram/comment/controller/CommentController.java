@@ -21,7 +21,7 @@ public class CommentController {
         return commentService.createComment ( feedId, commentRequestDto, userDetailsImpl );
     }
 
-    @DeleteMapping("comment/{commentId}")
+    @DeleteMapping("/comment/{commentId}")
     public String deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         commentService.deleteComment ( commentId, userDetailsImpl );
         return "댓글 삭제 완료";

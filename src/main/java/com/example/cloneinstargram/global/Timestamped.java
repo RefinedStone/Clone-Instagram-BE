@@ -1,4 +1,4 @@
-package com.example.cloneinstargram.comment.entity;
+package com.example.cloneinstargram.global;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

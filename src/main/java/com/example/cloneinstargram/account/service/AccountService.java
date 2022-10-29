@@ -97,6 +97,4 @@ public class AccountService {
         System.out.println(email + " : logout Success");
         return ResponseDto.success("Refresh Delete Success");
     }
-
-
 }

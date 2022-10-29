@@ -1,6 +1,8 @@
 package com.example.cloneinstargram.feed.service;
 
 import com.example.cloneinstargram.account.entity.Account;
+import com.example.cloneinstargram.comment.dto.response.CommentResponseDto;
+import com.example.cloneinstargram.comment.entity.Comment;
 import com.example.cloneinstargram.feed.dto.FeedoneResDto;
 import com.example.cloneinstargram.feed.dto.FeedsResDto;
 import com.example.cloneinstargram.feed.entity.Awsurl;
@@ -32,7 +34,7 @@ public class FeedService {
         Feed feed = feedRepository.findByIdAndAccount(feedId,userDetails.getAccount())
                 .orElseThrow(() -> new NullPointerException("해당 피드가 존재하지 않거나 수정 권한이 없습니다."));
 
-        feed.update(content);
+        feed.setContent(content);
         System.out.println("받은 수정 content내용: "+ content);
         feedRepository.save(feed);
         return new GlobalResDto("Success updateFeed", HttpStatus.OK.value());
@@ -77,6 +79,12 @@ public class FeedService {
         Feed feed = feedRepository.findById(feedId).orElseThrow(
                 () -> new RuntimeException("찾으시는 포스터가 없습니다.")
         );
-        return new FeedoneResDto(feed, awsUrl);
+
+        List<Comment> comments = feed.getComments();
+        List<CommentResponseDto> commentResponseDtos = new LinkedList<>();
+
+        for(Comment comment: comments)  commentResponseDtos.add(new CommentResponseDto(comment));
+
+        return new FeedoneResDto(feed, awsUrl, commentResponseDtos);
     }
 }

@@ -3,6 +3,7 @@ package com.example.cloneinstargram.comment.entity;
 import com.example.cloneinstargram.account.entity.Account;
 import com.example.cloneinstargram.comment.dto.request.CommentRequestDto;
 import com.example.cloneinstargram.feed.entity.Feed;
+import com.example.cloneinstargram.global.Timestamped;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 

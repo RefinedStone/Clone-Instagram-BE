@@ -14,11 +14,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CommentService {
-
     private final CommentRepository commentRepository;
     private final FeedRepository feedsRepository;
-
-
 
     public CommentResponseDto createComment(Long feedId, CommentRequestDto commentRequestDto, UserDetailsImpl userDetailsImpl) {
         Feed feed = feedsRepository.findById(feedId).orElseThrow(

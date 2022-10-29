@@ -2,7 +2,7 @@ package com.example.cloneinstargram.feed.entity;
 
 import com.example.cloneinstargram.account.entity.Account;
 import com.example.cloneinstargram.comment.entity.Comment;
-import com.example.cloneinstargram.feed.dto.FeedReqDto;
+import com.example.cloneinstargram.global.Timestamped;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor
-public class Feed {
+public class Feed extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -37,16 +37,4 @@ public class Feed {
         this.content = content;
         this.img = img;
     }
-
-//    public Feed(FeedReqDto feedReqDto) {
-//        this.account = account;
-//        this.content = feedReqDto.getContent();
-//        this.img = feedReqDto.getImg();
-//    }
-
-//    public void update(FeedReqDto feedReqDto) {
-//        this.account = account;
-//        this.content = feedReqDto.getContent();
-//        this.img = s3FileName;
-//    }
 }

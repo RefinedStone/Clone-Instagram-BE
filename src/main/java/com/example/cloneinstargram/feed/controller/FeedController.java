@@ -1,6 +1,7 @@
 package com.example.cloneinstargram.feed.controller;
 
 import com.example.cloneinstargram.feed.dto.FeedoneResDto;
+import com.example.cloneinstargram.feed.dto.FeedsResDto;
 import com.example.cloneinstargram.feed.service.FeedService;
 import com.example.cloneinstargram.global.dto.GlobalResDto;
 import com.example.cloneinstargram.security.user.UserDetailsImpl;
@@ -47,7 +48,7 @@ public class FeedController {
     }
 
     @GetMapping("/feed/show")
-    public List<FeedoneResDto> showFeeds() {
+    public FeedsResDto showFeeds(){
         System.out.println("==========컨트롤러 지나는중==========");
         return feedService.showFeeds();
     }

@@ -2,6 +2,7 @@ package com.example.cloneinstargram.feed.service;
 
 import com.example.cloneinstargram.account.entity.Account;
 import com.example.cloneinstargram.feed.dto.FeedoneResDto;
+import com.example.cloneinstargram.feed.dto.FeedsResDto;
 import com.example.cloneinstargram.feed.entity.Awsurl;
 import com.example.cloneinstargram.feed.entity.Feed;
 import com.example.cloneinstargram.feed.repository.AwsurlRepository;
@@ -58,14 +59,14 @@ public class FeedService {
     }
 
     @Transactional(readOnly = true)
-    public List<FeedoneResDto> showFeeds() {
+    public FeedsResDto showFeeds() {
         Awsurl awsUrl = awsurlRepository.findById(1L).orElseThrow(
                 () -> new RuntimeException("S3Url이 비어있어요")
         );
         List<Feed> feeds = feedRepository.findAll();
         List<FeedoneResDto> feedoneResDtos = new LinkedList<>();
         for(Feed feed: feeds)   feedoneResDtos.add(new FeedoneResDto(feed, awsUrl));
-        return feedoneResDtos;
+        return new FeedsResDto(feedoneResDtos);
     }
 
     @Transactional(readOnly = true)

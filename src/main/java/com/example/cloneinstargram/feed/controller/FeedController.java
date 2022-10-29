@@ -3,7 +3,6 @@ package com.example.cloneinstargram.feed.controller;
 import com.example.cloneinstargram.feed.dto.FeedReqDto;
 import com.example.cloneinstargram.feed.dto.FeedoneResDto;
 import com.example.cloneinstargram.feed.dto.FeedsResDto;
-import com.example.cloneinstargram.feed.entity.Feed;
 import com.example.cloneinstargram.feed.service.FeedService;
 import com.example.cloneinstargram.global.dto.GlobalResDto;
 import com.example.cloneinstargram.security.user.UserDetailsImpl;
@@ -11,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 

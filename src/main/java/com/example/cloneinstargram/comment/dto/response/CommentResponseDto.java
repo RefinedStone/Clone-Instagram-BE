@@ -6,7 +6,7 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-@Builder
+
 @Getter
 public class CommentResponseDto {
     private Long commentId;

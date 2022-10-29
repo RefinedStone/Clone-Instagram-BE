@@ -1,6 +1,7 @@
 package com.example.cloneinstargram.feed.entity;
 
 import com.example.cloneinstargram.account.entity.Account;
+import com.example.cloneinstargram.comment.entity.Comment;
 import com.example.cloneinstargram.feed.dto.FeedReqDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,8 +29,8 @@ public class Feed {
     @Column(nullable = false)
     private String img;
 
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "feed")
-//    private List<Comments> comments;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "feed")
+    private List<Comment> comments;
 
     public Feed(Account account, String content, String img) {
         this.account = account;

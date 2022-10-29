@@ -4,6 +4,8 @@ import com.example.cloneinstargram.comment.dto.request.CommentRequestDto;
 import com.example.cloneinstargram.comment.dto.response.CommentResponseDto;
 import com.example.cloneinstargram.comment.entity.Comment;
 import com.example.cloneinstargram.comment.repository.CommentRepository;
+import com.example.cloneinstargram.feed.entity.Feed;
+import com.example.cloneinstargram.feed.repository.FeedRepository;
 import com.example.cloneinstargram.security.user.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,8 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final FeedRepository feedsRepository;
+
+
 
     public CommentResponseDto createComment(Long feedId, CommentRequestDto commentRequestDto, UserDetailsImpl userDetailsImpl) {
         Feed feed = feedsRepository.findById(feedId).orElseThrow(

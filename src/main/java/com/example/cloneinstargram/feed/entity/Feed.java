@@ -1,14 +1,10 @@
 package com.example.cloneinstargram.feed.entity;
 
 import com.example.cloneinstargram.account.entity.Account;
-import com.example.cloneinstargram.feed.dto.FeedReqDto;
-import com.example.cloneinstargram.security.user.UserDetailsImpl;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import javax.persistence.*;
-import java.util.List;
 
 @Setter
 @Getter

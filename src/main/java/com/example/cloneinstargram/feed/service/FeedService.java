@@ -45,7 +45,7 @@ public class FeedService {
         storageUtil.deleteFile(feed.getImg());
 
         feedRepository.delete(feed);
-        return new GlobalResDto("삭제가 완료되었습니다", 200);
+        return new GlobalResDto("Success delete", 200);
     }
 
     @Transactional

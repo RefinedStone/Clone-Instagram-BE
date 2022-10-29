@@ -43,22 +43,22 @@ public class FeedService {
         Account account = userDetails.getAccount();
 
         feed.update(account, content);
+
         feedRepository.save(feed);
         return new GlobalResDto("Success updateFeed", HttpStatus.OK.value());
     }
 
-    public FeedResDto deleteFeed(MultipartFile image, UserDetailsImpl userDetails) {
+    public GlobalResDto deleteFeed(MultipartFile image, UserDetailsImpl userDetails) {
 
         Account account = userDetails.getAccount();
-        String fileKey = storageUtil.deleteFile(bucket, image.getOriginalFilename());
 
         Feed feed = feedRepository.findById(account.getId())
                 .orElseThrow(() -> new NullPointerException("해당 피드가 존재하지 않습니다"));
 
-        storageUtil.deleteFile(bucket, fileKey);
+        storageUtil.deleteFile(image.getOriginalFilename());
 
-        feedRepository.deleteById(account.getId());
-        return new FeedResDto("삭제가 완료되었습니다", 200);
+        feedRepository.delete(feed);
+        return new GlobalResDto("삭제가 완료되었습니다", 200);
     }
 
 

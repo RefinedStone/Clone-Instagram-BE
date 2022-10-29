@@ -5,8 +5,6 @@ import com.example.cloneinstargram.feed.service.FeedService;
 import com.example.cloneinstargram.global.dto.GlobalResDto;
 import com.example.cloneinstargram.security.user.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,7 +19,7 @@ public class FeedController {
     private final FeedService feedService;
 
     @PatchMapping("/feed/{feedId}")
-    public GlobalResDto updateFeed (@RequestParam(required = false, value= "content") String content,
+    public GlobalResDto updateFeed(@RequestParam(required = false, value = "content") String content,
                                    @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 
         System.out.println("content: " + content);
@@ -29,34 +27,29 @@ public class FeedController {
     }
 
     @DeleteMapping("/feed/{feedId}")
-    public ResponseEntity<?> deleteFeed(@PathVariable Long id) {
-        try {
-            feedService.deleteFeed(id);
-            return ResponseEntity.ok(id);
-        } catch (NullPointerException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.valueOf(404));
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.valueOf(403));
-        }
+    public GlobalResDto deleteFeed(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                        @RequestPart MultipartFile image) {
+        System.out.println("==========컨트롤러 지나는중==========");
+        return feedService.deleteFeed(image, userDetails);
     }
 
     @PostMapping("/feed")
-    public GlobalResDto addFeed(@RequestPart(required = false, value= "image") MultipartFile image,
-                                @RequestParam(required = false, value= "content") String content,
-                                @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public GlobalResDto addFeed(@RequestPart(required = false, value = "image") MultipartFile image,
+                                @RequestParam(required = false, value = "content") String content,
+                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
         System.out.println("이미지: " + image);
         System.out.println("content: " + content);
         return feedService.addFeed(image, content, userDetails);
     }
 
     @GetMapping("/feed/show")
-    public List<FeedoneResDto> showFeeds(){
+    public List<FeedoneResDto> showFeeds() {
         System.out.println("==========컨트롤러 지나는중==========");
         return feedService.showFeeds();
     }
 
     @GetMapping("/feed/show/{feedId}")
-    public FeedoneResDto showFeed(@PathVariable Long feedId){
+    public FeedoneResDto showFeed(@PathVariable Long feedId) {
         System.out.println("==========컨트롤러 지나는중==========");
         return feedService.showFeed(feedId);
     }

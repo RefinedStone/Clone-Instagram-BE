@@ -7,6 +7,7 @@ import com.example.cloneinstargram.account.entity.RefreshToken;
 import com.example.cloneinstargram.account.repository.AccountRepository;
 import com.example.cloneinstargram.account.repository.RefreshTokenRepository;
 import com.example.cloneinstargram.global.dto.GlobalResDto;
+import com.example.cloneinstargram.global.dto.ResponseDto;
 import com.example.cloneinstargram.jwt.dto.TokenDto;
 import com.example.cloneinstargram.jwt.util.JwtUtil;
 import com.example.cloneinstargram.security.user.UserDetailsImpl;
@@ -32,12 +33,14 @@ public class AccountService {
     public GlobalResDto signup(AccountReqDto accountReqDto) {
         // email 중복 검사
         if (accountRepository.findByEmail(accountReqDto.getEmail()).isPresent()) {
+            System.out.println("id overlap");
             throw new RuntimeException("Overlap Check");
         }
         accountReqDto.setEncodePwd(passwordEncoder.encode(accountReqDto.getPassword()));
         Account account = new Account(accountReqDto);
-
+        System.out.println(account.getEmail() + " signup success");
         accountRepository.save(account);
+
         return new GlobalResDto("Success signup", HttpStatus.OK.value());
     }
 
@@ -81,7 +84,19 @@ public class AccountService {
         myInfo
                 /*.append()*/
                 .append(userDetails.getAccount().getNickname());
+        System.out.println("myinfo: " + myInfo.toString());
         return myInfo;
 
     }
+
+    //logout 기능
+    @Transactional
+    public ResponseDto<?> logout(String email) throws Exception {
+        var refreshToken= refreshTokenRepository.findByAccountEmail(email).orElseThrow(RuntimeException::new);
+        refreshTokenRepository.delete(refreshToken);
+        System.out.println(email + " : logout Success");
+        return ResponseDto.success("Refresh Delete Success");
+    }
+
+
 }

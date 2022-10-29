@@ -25,11 +25,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String servletPath = request.getServletPath();
-        System.out.println(servletPath);
+        System.out.println("현재 request URL: "+servletPath);
         String accessToken = jwtUtil.getHeaderToken(request, "Access");
         String refreshToken = jwtUtil.getHeaderToken(request, "Refresh");
 
-        System.out.println(accessToken);
+        System.out.println("엑세스 토큰 값: "+accessToken);
 
         if(accessToken != null) {
             if(!jwtUtil.tokenValidation(accessToken)){

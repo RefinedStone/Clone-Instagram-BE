@@ -78,7 +78,7 @@ public class AccountService {
     }
     
     // myPage 내 정보 가져오기
-    public String getMyInfo(UserDetailsImpl userDetails) {
+    public StringBuilder getMyInfo(UserDetailsImpl userDetails) {
        // 추가 될 내용을 위해 StringBuilder 생성
         var myInfo = new StringBuilder();
         myInfo

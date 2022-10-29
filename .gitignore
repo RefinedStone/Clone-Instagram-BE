@@ -27,9 +27,6 @@
 hs_err_pid*
 replay_pid*
 
-#Personal info hide
-application-jwtToken.properties
-
 # End of https://www.toptal.com/developers/gitignore/api/java
 /build/resources/main/application-aws.properties
 /out/production/resources/application-aws.properties

@@ -48,14 +48,14 @@ public class FeedService {
         return new GlobalResDto("Success updateFeed", HttpStatus.OK.value());
     }
 
-    public GlobalResDto deleteFeed(MultipartFile image, UserDetailsImpl userDetails) {
+    public GlobalResDto deleteFeed(UserDetailsImpl userDetails) {
 
         Account account = userDetails.getAccount();
 
         Feed feed = feedRepository.findById(account.getId())
                 .orElseThrow(() -> new NullPointerException("해당 피드가 존재하지 않습니다"));
 
-        storageUtil.deleteFile(image.getOriginalFilename());
+        storageUtil.deleteFile(feed.getImg());
 
         feedRepository.delete(feed);
         return new GlobalResDto("삭제가 완료되었습니다", 200);

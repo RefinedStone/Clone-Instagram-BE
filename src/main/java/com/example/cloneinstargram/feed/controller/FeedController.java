@@ -27,10 +27,10 @@ public class FeedController {
     }
 
     @DeleteMapping("/feed/{feedId}")
-    public GlobalResDto deleteFeed(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                        @RequestPart MultipartFile image) {
+    public GlobalResDto deleteFeed(@AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
         System.out.println("==========컨트롤러 지나는중==========");
-        return feedService.deleteFeed(image, userDetails);
+        return feedService.deleteFeed(userDetails);
     }
 
     @PostMapping("/feed")

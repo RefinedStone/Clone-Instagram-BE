@@ -32,3 +32,4 @@ replay_pid*
 /out/production/resources/application-aws.properties
 /src/main/resources/application-aws.properties
 /.idea/
+/build/*

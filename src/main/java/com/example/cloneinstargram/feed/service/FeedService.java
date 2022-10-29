@@ -27,23 +27,19 @@ public class FeedService {
     private final AwsurlRepository awsurlRepository;
     private final StorageUtil storageUtil;
 
-    public GlobalResDto updateFeed(String content, UserDetailsImpl userDetails) throws IOException {
-        Feed feed = feedRepository.findById(userDetails.getAccount().getId())
-                .orElseThrow(() -> new NullPointerException("해당 피드가 존재하지 않습니다."));
+    public GlobalResDto updateFeed(String content, UserDetailsImpl userDetails, Long feedId) throws IOException {
+        Feed feed = feedRepository.findByIdAndAccount(feedId,userDetails.getAccount())
+                .orElseThrow(() -> new NullPointerException("해당 피드가 존재하지 않거나 수정 권한이 없습니다."));
 
-        Account account = userDetails.getAccount();
-        feed.update(account, content);
+        feed.update(content);
         System.out.println("받은 수정 content내용: "+ content);
         feedRepository.save(feed);
         return new GlobalResDto("Success updateFeed", HttpStatus.OK.value());
     }
 
     public GlobalResDto deleteFeed(Long feedId, UserDetailsImpl userDetails) {
-
-        Account account = userDetails.getAccount();
-
-        Feed feed = feedRepository.findByIdAndAccount(feedId,account)
-                .orElseThrow(() -> new NullPointerException("해당 피드가 존재하지 않습니다"));
+        Feed feed = feedRepository.findByIdAndAccount(feedId,userDetails.getAccount())
+                .orElseThrow(() -> new NullPointerException("해당 피드가 존재하지 않거나 삭제 권한이 없습니다."));
 
         storageUtil.deleteFile(feed.getImg());
 

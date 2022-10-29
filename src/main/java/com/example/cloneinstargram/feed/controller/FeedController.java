@@ -20,10 +20,11 @@ public class FeedController {
 
     @PatchMapping("/feed/{feedId}")
     public GlobalResDto updateFeed(@RequestParam(required = false, value = "content") String content,
+                                   @PathVariable Long feedId,
                                    @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         System.out.println("==========컨트롤러 지나는중==========");
         System.out.println("content: " + content);
-        return feedService.updateFeed(content, userDetails);
+        return feedService.updateFeed(content, userDetails, feedId);
     }
 
     @DeleteMapping("/feed/{feedId}")

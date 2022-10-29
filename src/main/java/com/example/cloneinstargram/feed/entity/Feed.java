@@ -38,8 +38,7 @@ public class Feed {
         this.img = img;
     }
 
-    public void update(Account account, String content) {
-        this.account = account;
+    public void update(String content) {
         this.content = content;
     }
 }

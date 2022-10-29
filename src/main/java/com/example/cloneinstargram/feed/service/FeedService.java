@@ -1,5 +1,8 @@
 package com.example.cloneinstargram.feed.service;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.example.cloneinstargram.account.entity.Account;
 import com.example.cloneinstargram.account.repository.AccountRepository;
 import com.example.cloneinstargram.feed.dto.FeedReqDto;
@@ -32,32 +35,30 @@ public class FeedService {
     private final AwsurlRepository awsurlRepository;
     private final StorageUtil storageUtil;
 
-    public Feed updateFeed(Long id, FeedReqDto feedReqDto) throws IOException {
-        Feed feed = feedRepository.findById(id)
-                .orElseThrow(() -> new NullPointerException("해당 피드가 존재하지 않습니다"));
-        String image = feed.getImg();
+    public GlobalResDto updateFeed(String content, UserDetailsImpl userDetails) throws IOException {
 
-//        String imgPath = amazonS3Client.getUrl(bucket, image).toString();
-//        String s3FileName = imgPath;
-//        feed.update(feedReqDto);
-        return feedRepository.save(feed);
+        Feed feed = feedRepository.findById(userDetails.getAccount().getId())
+                .orElseThrow(() -> new NullPointerException("해당 피드가 존재하지 않습니다."));
+
+        Account account = userDetails.getAccount();
+
+        feed.update(account, content);
+        feedRepository.save(feed);
+        return new GlobalResDto("Success updateFeed", HttpStatus.OK.value());
     }
 
-    public FeedResDto deleteFeed(Long id) {
-        Feed feed = feedRepository.findById(id)
+    public FeedResDto deleteFeed(MultipartFile image, UserDetailsImpl userDetails) {
+
+        Account account = userDetails.getAccount();
+        String fileKey = storageUtil.deleteFile(bucket, image.getOriginalFilename());
+
+        Feed feed = feedRepository.findById(account.getId())
                 .orElseThrow(() -> new NullPointerException("해당 피드가 존재하지 않습니다"));
 
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("유저정보가 없습니다"));
-//        try {
-//            amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, feed.getImg()));
-//        } catch (AmazonServiceException e) {
-//            e.printStackTrace();
-//        } catch (SdkClientException e) {
-//            e.printStackTrace();
-//        }
-        feedRepository.deleteById(id);
-        return new FeedResDto("삭제가 완료되었습니다", 200, feed.getContent(), account.getNickname(), feed.getImg());
+        storageUtil.deleteFile(bucket, fileKey);
+
+        feedRepository.deleteById(account.getId());
+        return new FeedResDto("삭제가 완료되었습니다", 200);
     }
 
 

@@ -2,6 +2,7 @@ package com.example.cloneinstargram.feed.entity;
 
 import com.example.cloneinstargram.account.entity.Account;
 import com.example.cloneinstargram.feed.dto.FeedReqDto;
+import com.example.cloneinstargram.security.user.UserDetailsImpl;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -37,15 +38,8 @@ public class Feed {
         this.img = img;
     }
 
-//    public Feed(FeedReqDto feedReqDto) {
-//        this.account = account;
-//        this.content = feedReqDto.getContent();
-//        this.img = feedReqDto.getImg();
-//    }
-
-//    public void update(FeedReqDto feedReqDto) {
-//        this.account = account;
-//        this.content = feedReqDto.getContent();
-//        this.img = s3FileName;
-//    }
+    public void update(Account account, String content) {
+        this.account = account;
+        this.content = content;
+    }
 }

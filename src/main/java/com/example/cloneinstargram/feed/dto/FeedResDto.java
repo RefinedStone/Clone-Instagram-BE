@@ -10,15 +10,9 @@ import lombok.RequiredArgsConstructor;
 public class FeedResDto {
     private String msg;
     private int statusCode;
-    private String content;
-    private String nickname;
-    private String img;
 
-    public FeedResDto(String msg, int statusCode, String content, String nickname, String img) {
+    public FeedResDto(String msg, int statusCode) {
         this.msg = msg;
         this.statusCode = statusCode;
-        this.content = content;
-        this.nickname = nickname;
-        this.img = img;
     }
 }

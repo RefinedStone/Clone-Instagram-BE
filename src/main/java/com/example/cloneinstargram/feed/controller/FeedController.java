@@ -21,22 +21,25 @@ public class FeedController {
     @PatchMapping("/feed/{feedId}")
     public GlobalResDto updateFeed(@RequestParam(required = false, value = "content") String content,
                                    @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-
+        System.out.println("==========컨트롤러 지나는중==========");
         System.out.println("content: " + content);
         return feedService.updateFeed(content, userDetails);
     }
 
     @DeleteMapping("/feed/{feedId}")
-    public GlobalResDto deleteFeed(@AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
+    public GlobalResDto deleteFeed(@PathVariable Long feedId,
+                                   @AuthenticationPrincipal UserDetailsImpl userDetails)
+    {
         System.out.println("==========컨트롤러 지나는중==========");
-        return feedService.deleteFeed(userDetails);
+        System.out.println(feedId);
+        return feedService.deleteFeed(feedId, userDetails);
     }
 
     @PostMapping("/feed")
     public GlobalResDto addFeed(@RequestPart(required = false, value = "image") MultipartFile image,
                                 @RequestParam(required = false, value = "content") String content,
                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        System.out.println("==========컨트롤러 지나는중==========");
         System.out.println("이미지: " + image);
         System.out.println("content: " + content);
         return feedService.addFeed(image, content, userDetails);
@@ -51,6 +54,7 @@ public class FeedController {
     @GetMapping("/feed/show/{feedId}")
     public FeedoneResDto showFeed(@PathVariable Long feedId) {
         System.out.println("==========컨트롤러 지나는중==========");
+        System.out.println("받은 feedId: " + feedId);
         return feedService.showFeed(feedId);
     }
 }

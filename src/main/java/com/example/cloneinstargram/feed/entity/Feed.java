@@ -29,8 +29,8 @@ public class Feed {
     @Column(nullable = false)
     private String img;
 
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "feed")
-//    private List<Comments> comments;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "feed")
+    private List<Comments> comments;
 
     public Feed(Account account, String content, String img) {
         this.account = account;

@@ -25,6 +25,7 @@ public class Account {
     @NotBlank
     private String nickname;
 
+
     public Account(AccountReqDto accountReqDto) {
         this.email = accountReqDto.getEmail();
         this.password = accountReqDto.getPassword();

@@ -1,5 +1,6 @@
 package com.example.cloneinstargram.feed.controller;
 
+import com.example.cloneinstargram.feed.dto.FeedUpdateResDto;
 import com.example.cloneinstargram.feed.dto.FeedoneResDto;
 import com.example.cloneinstargram.feed.dto.FeedsResDto;
 import com.example.cloneinstargram.feed.service.FeedService;
@@ -20,9 +21,9 @@ public class FeedController {
     private final FeedService feedService;
 
     @PatchMapping("/feed/{feedId}")
-    public GlobalResDto updateFeed(@RequestParam(required = false, value = "content") String content,
-                                   @PathVariable Long feedId,
-                                   @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+    public FeedUpdateResDto updateFeed(@RequestParam(required = false, value = "content") String content,
+                                       @PathVariable Long feedId,
+                                       @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         System.out.println("==========컨트롤러 지나는중==========");
         System.out.println("content: " + content);
         return feedService.updateFeed(content, userDetails, feedId);

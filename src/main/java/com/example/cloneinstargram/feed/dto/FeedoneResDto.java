@@ -1,9 +1,7 @@
 package com.example.cloneinstargram.feed.dto;
 
 import com.example.cloneinstargram.comment.dto.response.CommentResponseDto;
-import com.example.cloneinstargram.feed.entity.Awsurl;
 import com.example.cloneinstargram.feed.entity.Feed;
-import com.example.cloneinstargram.feed.entity.S3image;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

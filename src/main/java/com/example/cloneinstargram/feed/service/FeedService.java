@@ -6,16 +6,15 @@ import com.example.cloneinstargram.comment.entity.Comment;
 import com.example.cloneinstargram.feed.dto.FeedUpdateResDto;
 import com.example.cloneinstargram.feed.dto.FeedoneResDto;
 import com.example.cloneinstargram.feed.dto.FeedsResDto;
-import com.example.cloneinstargram.feed.entity.Awsurl;
 import com.example.cloneinstargram.feed.entity.Feed;
 import com.example.cloneinstargram.feed.entity.S3image;
-import com.example.cloneinstargram.feed.repository.AwsurlRepository;
 import com.example.cloneinstargram.feed.repository.FeedRepository;
 import com.example.cloneinstargram.feed.repository.S3imageRepository;
 import com.example.cloneinstargram.global.dto.GlobalResDto;
 import com.example.cloneinstargram.s3utils.StorageUtil;
 import com.example.cloneinstargram.security.user.UserDetailsImpl;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,13 +25,17 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-@RequiredArgsConstructor
 @Service
 public class FeedService {
-    private final FeedRepository feedRepository;
-    private final AwsurlRepository awsurlRepository;
-    private final S3imageRepository s3imageRepository;
-    private final StorageUtil storageUtil;
+    @Value("${bucket.pathName}")
+    private String s3Path;
+    @Autowired
+    private FeedRepository feedRepository;
+    @Autowired
+    private S3imageRepository s3imageRepository;
+    @Autowired
+    private StorageUtil storageUtil;
+
 
     public FeedUpdateResDto updateFeed(String content, UserDetailsImpl userDetails, Long feedId) throws IOException {
         Feed feed = feedRepository.findByIdAndAccount(feedId,userDetails.getAccount())
@@ -57,6 +60,7 @@ public class FeedService {
     public GlobalResDto addFeed(List<MultipartFile> images,
                                 String content,
                                 UserDetailsImpl userDetails){
+        System.out.println(s3Path);
         Account account = userDetails.getAccount();
         Feed feed = new Feed(account, content);
         List<S3image> s3images = new LinkedList<>();
@@ -68,16 +72,13 @@ public class FeedService {
 
     @Transactional(readOnly = true)
     public FeedsResDto showFeeds() {
-        Awsurl awsUrl = awsurlRepository.findById(1L).orElseThrow(
-                () -> new RuntimeException("S3Url이 비어있어요")
-        );
         List<Feed> feeds = feedRepository.findAll();
         List<FeedoneResDto> feedoneResDtos = new LinkedList<>();
         for(Feed feed: feeds)   {
             List<String> image = new LinkedList<>();
             FeedoneResDto feedoneResDto = new FeedoneResDto(feed);
             for(S3image s3image: feed.getImages())
-                image.add(awsUrl.getUrl()+s3image.getImage());
+                image.add(s3Path+s3image.getImage());
             feedoneResDto.setImg(image);
             feedoneResDtos.add(feedoneResDto);
         }
@@ -86,9 +87,6 @@ public class FeedService {
 
     @Transactional(readOnly = true)
     public FeedoneResDto showFeed(Long feedId) {
-        Awsurl awsUrl = awsurlRepository.findById(1L).orElseThrow(
-                () -> new RuntimeException("S3Url이 비어있어요")
-        );
         Feed feed = feedRepository.findById(feedId).orElseThrow(
                 () -> new RuntimeException("찾으시는 포스터가 없습니다.")
         );
@@ -97,7 +95,7 @@ public class FeedService {
         List<CommentResponseDto> commentResponseDtos = new LinkedList<>();
         FeedoneResDto feedoneResDto = new FeedoneResDto(feed);
         List<String> image = new LinkedList<>();
-        for(S3image s3image: feed.getImages())  image.add(awsUrl.getUrl()+s3image.getImage());
+        for(S3image s3image: feed.getImages())  image.add(s3Path+s3image.getImage());
         for(Comment comment: comments)  commentResponseDtos.add(new CommentResponseDto(comment));
         feedoneResDto.setImg(image);
         feedoneResDto.setComments(commentResponseDtos);

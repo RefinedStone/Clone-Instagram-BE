@@ -42,7 +42,7 @@ public class FeedController {
                                 @RequestParam(required = false, value = "content") String content,
                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
         System.out.println("==========컨트롤러 지나는중==========");
-        System.out.println("이미지: " + image);
+        System.out.println("이미지의 갯수: " + image.size());
         System.out.println("content: " + content);
         return feedService.addFeed(image, content, userDetails);
     }

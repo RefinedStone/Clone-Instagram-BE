@@ -76,19 +76,18 @@ public class AccountService {
         response.addHeader(JwtUtil.ACCESS_TOKEN, tokenDto.getAccessToken());
         response.addHeader(JwtUtil.REFRESH_TOKEN, tokenDto.getRefreshToken());
     }
-
+    
     // myPage 내 정보 가져오기
     public StringBuilder getMyInfo(UserDetailsImpl userDetails) {
-        // 추가 될 내용을 위해 StringBuilder 생성
+       // 추가 될 내용을 위해 StringBuilder 생성
         var myInfo = new StringBuilder();
         myInfo
                 /*.append()*/
                 .append(userDetails.getAccount().getNickname());
         System.out.println("myinfo: " + myInfo.toString());
         return myInfo;
-
     }
-
+    
     //logout 기능
     @Transactional
     public ResponseDto<?> logout(String email) throws Exception {
@@ -97,6 +96,4 @@ public class AccountService {
         System.out.println(email + " : logout Success");
         return ResponseDto.success("Refresh Delete Success");
     }
-
-
 }

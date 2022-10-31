@@ -7,8 +7,10 @@ import com.example.cloneinstargram.feed.dto.FeedoneResDto;
 import com.example.cloneinstargram.feed.dto.FeedsResDto;
 import com.example.cloneinstargram.feed.entity.Awsurl;
 import com.example.cloneinstargram.feed.entity.Feed;
+import com.example.cloneinstargram.feed.entity.S3image;
 import com.example.cloneinstargram.feed.repository.AwsurlRepository;
 import com.example.cloneinstargram.feed.repository.FeedRepository;
+import com.example.cloneinstargram.feed.repository.S3imageRepository;
 import com.example.cloneinstargram.global.dto.GlobalResDto;
 import com.example.cloneinstargram.s3utils.StorageUtil;
 import com.example.cloneinstargram.security.user.UserDetailsImpl;
@@ -28,6 +30,7 @@ import java.util.List;
 public class FeedService {
     private final FeedRepository feedRepository;
     private final AwsurlRepository awsurlRepository;
+    private final S3imageRepository s3imageRepository;
     private final StorageUtil storageUtil;
 
     public GlobalResDto updateFeed(String content, UserDetailsImpl userDetails, Long feedId) throws IOException {
@@ -40,23 +43,26 @@ public class FeedService {
         return new GlobalResDto("Success updateFeed", HttpStatus.OK.value());
     }
 
-    public GlobalResDto deleteFeed(Long feedId, UserDetailsImpl userDetails) {
-        Feed feed = feedRepository.findByIdAndAccount(feedId,userDetails.getAccount())
-                .orElseThrow(() -> new NullPointerException("해당 피드가 존재하지 않거나 삭제 권한이 없습니다."));
-
-        storageUtil.deleteFile(feed.getImg());
-
-        feedRepository.delete(feed);
-        return new GlobalResDto("Success delete", 200);
-    }
+//    public GlobalResDto deleteFeed(Long feedId, UserDetailsImpl userDetails) {
+//        Feed feed = feedRepository.findByIdAndAccount(feedId,userDetails.getAccount())
+//                .orElseThrow(() -> new NullPointerException("해당 피드가 존재하지 않거나 삭제 권한이 없습니다."));
+//
+//        storageUtil.deleteFile(feed.getImg());
+//
+//        feedRepository.delete(feed);
+//        return new GlobalResDto("Success delete", 200);
+//    }
 
     @Transactional
-    public GlobalResDto addFeed(MultipartFile image,
+    public GlobalResDto addFeed(List<MultipartFile> images,
                                 String content,
                                 UserDetailsImpl userDetails){
         Account account = userDetails.getAccount();
-        String fileKey = storageUtil.uploadFile(image);
-        feedRepository.save(new Feed(account, content, fileKey));
+        Feed feed = new Feed(account, content);
+        List<S3image> s3images = new LinkedList<>();
+        for(MultipartFile image: images)    s3images.add(s3imageRepository.save(new S3image(storageUtil.uploadFile(image), feed)));
+        feed.setImages(s3images);
+        feedRepository.save(feed);
         return new GlobalResDto("Success addFeed", HttpStatus.OK.value());
     }
 
@@ -67,7 +73,14 @@ public class FeedService {
         );
         List<Feed> feeds = feedRepository.findAll();
         List<FeedoneResDto> feedoneResDtos = new LinkedList<>();
-        for(Feed feed: feeds)   feedoneResDtos.add(new FeedoneResDto(feed, awsUrl));
+        for(Feed feed: feeds)   {
+            List<String> image = new LinkedList<>();
+            FeedoneResDto feedoneResDto = new FeedoneResDto(feed);
+            for(S3image s3image: feed.getImages())
+                image.add(awsUrl.getUrl()+s3image.getImage());
+            feedoneResDto.setImg(image);
+            feedoneResDtos.add(feedoneResDto);
+        }
         return new FeedsResDto(feedoneResDtos);
     }
 
@@ -82,9 +95,12 @@ public class FeedService {
 
         List<Comment> comments = feed.getComments();
         List<CommentResponseDto> commentResponseDtos = new LinkedList<>();
-
+        FeedoneResDto feedoneResDto = new FeedoneResDto(feed);
+        List<String> image = new LinkedList<>();
+        for(S3image s3image: feed.getImages())  image.add(awsUrl.getUrl()+s3image.getImage());
         for(Comment comment: comments)  commentResponseDtos.add(new CommentResponseDto(comment));
-
-        return new FeedoneResDto(feed, awsUrl, commentResponseDtos);
+        feedoneResDto.setImg(image);
+        feedoneResDto.setComments(commentResponseDtos);
+        return feedoneResDto;
     }
 }

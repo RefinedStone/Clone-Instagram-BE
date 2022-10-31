@@ -16,25 +16,25 @@ import java.util.List;
 @NoArgsConstructor
 public class Feed extends Timestamped {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "nickname", nullable = false)
+    @JoinColumn(nullable = false)
     private Account account;
 
     @Column(nullable = false)
     private String content;
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "feed")
     @Column(nullable = false)
-    private String img;
+    private List<S3image> images;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "feed")
     private List<Comment> comments;
 
-    public Feed(Account account, String content, String img) {
+    public Feed(Account account, String content) {
         this.account = account;
         this.content = content;
-        this.img = img;
     }
 }

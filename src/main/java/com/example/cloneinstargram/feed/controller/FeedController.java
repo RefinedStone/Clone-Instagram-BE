@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -27,17 +28,17 @@ public class FeedController {
         return feedService.updateFeed(content, userDetails, feedId);
     }
 
-    @DeleteMapping("/feed/{feedId}")
-    public GlobalResDto deleteFeed(@PathVariable Long feedId,
-                                   @AuthenticationPrincipal UserDetailsImpl userDetails)
-    {
-        System.out.println("==========컨트롤러 지나는중==========");
-        System.out.println(feedId);
-        return feedService.deleteFeed(feedId, userDetails);
-    }
+//    @DeleteMapping("/feed/{feedId}")
+//    public GlobalResDto deleteFeed(@PathVariable Long feedId,
+//                                   @AuthenticationPrincipal UserDetailsImpl userDetails)
+//    {
+//        System.out.println("==========컨트롤러 지나는중==========");
+//        System.out.println(feedId);
+//        return feedService.deleteFeed(feedId, userDetails);
+//    }
 
     @PostMapping("/feed")
-    public GlobalResDto addFeed(@RequestPart(required = false, value = "image") MultipartFile image,
+    public GlobalResDto addFeed(@RequestPart(required = false, value = "image") List<MultipartFile> image,
                                 @RequestParam(required = false, value = "content") String content,
                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
         System.out.println("==========컨트롤러 지나는중==========");

@@ -29,14 +29,14 @@ public class FeedController {
         return feedService.updateFeed(content, userDetails, feedId);
     }
 
-//    @DeleteMapping("/feed/{feedId}")
-//    public GlobalResDto deleteFeed(@PathVariable Long feedId,
-//                                   @AuthenticationPrincipal UserDetailsImpl userDetails)
-//    {
-//        System.out.println("==========컨트롤러 지나는중==========");
-//        System.out.println(feedId);
-//        return feedService.deleteFeed(feedId, userDetails);
-//    }
+    @DeleteMapping("/feed/{feedId}")
+    public GlobalResDto deleteFeed(@PathVariable Long feedId,
+                                   @AuthenticationPrincipal UserDetailsImpl userDetails)
+    {
+        System.out.println("==========컨트롤러 지나는중==========");
+        System.out.println("삭제할 feed ID: " + feedId);
+        return feedService.deleteFeed(feedId, userDetails);
+    }
 
     @PostMapping("/feed")
     public GlobalResDto addFeed(@RequestPart(required = false, value = "image") List<MultipartFile> image,

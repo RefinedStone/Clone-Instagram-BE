@@ -44,15 +44,14 @@ public class FeedService {
         return new FeedUpdateResDto("Success updateFeed", HttpStatus.OK.value(),content);
     }
 
-//    public GlobalResDto deleteFeed(Long feedId, UserDetailsImpl userDetails) {
-//        Feed feed = feedRepository.findByIdAndAccount(feedId,userDetails.getAccount())
-//                .orElseThrow(() -> new NullPointerException("해당 피드가 존재하지 않거나 삭제 권한이 없습니다."));
-//
-//        storageUtil.deleteFile(feed.getImg());
-//
-//        feedRepository.delete(feed);
-//        return new GlobalResDto("Success delete", 200);
-//    }
+    public GlobalResDto deleteFeed(Long feedId, UserDetailsImpl userDetails) {
+        Feed feed = feedRepository.findByIdAndAccount(feedId,userDetails.getAccount())
+                .orElseThrow(() -> new NullPointerException("해당 피드가 존재하지 않거나 삭제 권한이 없습니다."));
+
+        for(S3image img:feed.getImages())   storageUtil.deleteFile(img.getImage());
+        feedRepository.delete(feed);
+        return new GlobalResDto("Success delete", 200);
+    }
 
     @Transactional
     public GlobalResDto addFeed(List<MultipartFile> images,

@@ -3,11 +3,15 @@ package com.example.cloneinstargram.feed.entity;
 import com.example.cloneinstargram.account.entity.Account;
 import com.example.cloneinstargram.comment.entity.Comment;
 import com.example.cloneinstargram.global.Timestamped;
+import com.example.cloneinstargram.like.dto.LikeResDto;
+import com.example.cloneinstargram.like.entity.Like;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -33,8 +37,16 @@ public class Feed extends Timestamped {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "feed")
     private List<Comment> comments;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
+    private List<Like> likes = new ArrayList<>();
+
     public Feed(Account account, String content) {
         this.account = account;
         this.content = content;
+    }
+    public LikeResDto toDto() {
+        int likesSize = this.likes.size();
+        return new LikeResDto(this.id, this.content, likesSize);
     }
 }

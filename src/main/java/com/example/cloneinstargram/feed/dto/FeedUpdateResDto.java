@@ -5,12 +5,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class FeedUpdateDto {
+public class FeedUpdateResDto {
     private String msg;
     private int statusCode;
     private String content;
 
-    public FeedUpdateDto (String msg, int statusCode, String content) {
+    public FeedUpdateResDto (String msg, int statusCode, String content) {
         this.msg = msg;
         this.statusCode= statusCode;
         this.content = content;

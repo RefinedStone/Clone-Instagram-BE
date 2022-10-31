@@ -3,6 +3,7 @@ package com.example.cloneinstargram.feed.service;
 import com.example.cloneinstargram.account.entity.Account;
 import com.example.cloneinstargram.comment.dto.response.CommentResponseDto;
 import com.example.cloneinstargram.comment.entity.Comment;
+import com.example.cloneinstargram.feed.dto.FeedUpdateResDto;
 import com.example.cloneinstargram.feed.dto.FeedoneResDto;
 import com.example.cloneinstargram.feed.dto.FeedsResDto;
 import com.example.cloneinstargram.feed.entity.Awsurl;
@@ -30,14 +31,14 @@ public class FeedService {
     private final AwsurlRepository awsurlRepository;
     private final StorageUtil storageUtil;
 
-    public GlobalResDto updateFeed(String content, UserDetailsImpl userDetails, Long feedId) throws IOException {
+    public FeedUpdateResDto updateFeed(String content, UserDetailsImpl userDetails, Long feedId) throws IOException {
         Feed feed = feedRepository.findByIdAndAccount(feedId,userDetails.getAccount())
                 .orElseThrow(() -> new NullPointerException("해당 피드가 존재하지 않거나 수정 권한이 없습니다."));
 
         feed.setContent(content);
         System.out.println("받은 수정 content내용: "+ content);
         feedRepository.save(feed);
-        return new GlobalResDto("Success updateFeed", HttpStatus.OK.value());
+        return new FeedUpdateResDto("Success updateFeed", HttpStatus.OK.value(),content);
     }
 
     public GlobalResDto deleteFeed(Long feedId, UserDetailsImpl userDetails) {

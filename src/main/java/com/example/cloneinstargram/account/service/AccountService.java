@@ -7,8 +7,10 @@ import com.example.cloneinstargram.account.entity.RefreshToken;
 import com.example.cloneinstargram.account.repository.AccountRepository;
 import com.example.cloneinstargram.account.repository.RefreshTokenRepository;
 import com.example.cloneinstargram.global.dto.GlobalResDto;
+import com.example.cloneinstargram.global.dto.ResponseDto;
 import com.example.cloneinstargram.jwt.dto.TokenDto;
 import com.example.cloneinstargram.jwt.util.JwtUtil;
+import com.example.cloneinstargram.security.user.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,14 +32,15 @@ public class AccountService {
     @Transactional
     public GlobalResDto signup(AccountReqDto accountReqDto) {
         // email 중복 검사
-        if(accountRepository.findByEmail(accountReqDto.getEmail()).isPresent()){
+        if (accountRepository.findByEmail(accountReqDto.getEmail()).isPresent()) {
+            System.out.println("id overlap");
             throw new RuntimeException("Overlap Check");
         }
-
         accountReqDto.setEncodePwd(passwordEncoder.encode(accountReqDto.getPassword()));
         Account account = new Account(accountReqDto);
-
+        System.out.println(account.getEmail() + " signup success");
         accountRepository.save(account);
+
         return new GlobalResDto("Success signup", HttpStatus.OK.value());
     }
 
@@ -48,7 +51,7 @@ public class AccountService {
                 () -> new RuntimeException("Not found Account")
         );
 
-        if(!passwordEncoder.matches(loginReqDto.getPassword(), account.getPassword())) {
+        if (!passwordEncoder.matches(loginReqDto.getPassword(), account.getPassword())) {
             throw new RuntimeException("Not matches Password");
         }
 
@@ -56,9 +59,9 @@ public class AccountService {
 
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findByAccountEmail(loginReqDto.getEmail());
 
-        if(refreshToken.isPresent()) {
+        if (refreshToken.isPresent()) {
             refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
-        }else {
+        } else {
             RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), loginReqDto.getEmail());
             refreshTokenRepository.save(newToken);
         }
@@ -72,5 +75,25 @@ public class AccountService {
     private void setHeader(HttpServletResponse response, TokenDto tokenDto) {
         response.addHeader(JwtUtil.ACCESS_TOKEN, tokenDto.getAccessToken());
         response.addHeader(JwtUtil.REFRESH_TOKEN, tokenDto.getRefreshToken());
+    }
+    
+    // myPage 내 정보 가져오기
+    public StringBuilder getMyInfo(UserDetailsImpl userDetails) {
+       // 추가 될 내용을 위해 StringBuilder 생성
+        var myInfo = new StringBuilder();
+        myInfo
+                /*.append()*/
+                .append(userDetails.getAccount().getNickname());
+        System.out.println("myinfo: " + myInfo.toString());
+        return myInfo;
+    }
+    
+    //logout 기능
+    @Transactional
+    public ResponseDto<?> logout(String email) throws Exception {
+        var refreshToken= refreshTokenRepository.findByAccountEmail(email).orElseThrow(RuntimeException::new);
+        refreshTokenRepository.delete(refreshToken);
+        System.out.println(email + " : logout Success");
+        return ResponseDto.success("Refresh Delete Success");
     }
 }

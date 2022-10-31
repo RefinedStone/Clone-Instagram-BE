@@ -25,13 +25,11 @@ public class Account {
     @NotBlank
     private String nickname;
 
-    public Account(String email, String password, String nickname) {
-        this.email = email;
-        this.password = password;
-        this.nickname = nickname;
-    }
-    public void setEncodePwd(String encodePwd) {
-        this.password = encodePwd;
+
+    public Account(AccountReqDto accountReqDto) {
+        this.email = accountReqDto.getEmail();
+        this.password = accountReqDto.getPassword();
+        this.nickname = accountReqDto.getNickname();
     }
 
 }

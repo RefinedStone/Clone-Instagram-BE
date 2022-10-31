@@ -1,13 +1,18 @@
 package com.example.cloneinstargram.feed.controller;
 
-import com.example.cloneinstargram.feed.dto.FeedReqDto;
+import com.example.cloneinstargram.feed.dto.FeedUpdateResDto;
+import com.example.cloneinstargram.feed.dto.FeedoneResDto;
+import com.example.cloneinstargram.feed.dto.FeedsResDto;
 import com.example.cloneinstargram.feed.service.FeedService;
+import com.example.cloneinstargram.global.dto.GlobalResDto;
+import com.example.cloneinstargram.security.user.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -16,26 +21,43 @@ public class FeedController {
     private final FeedService feedService;
 
     @PatchMapping("/feed/{feedId}")
-    public ResponseEntity<?> updateFeed(@PathVariable Long id, @RequestParam(value="dto")FeedReqDto feedReqDto)
-            throws IOException {
-        try {
-            return ResponseEntity.ok(feedService.updateFeed(id, feedReqDto));
-        } catch (NullPointerException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.valueOf(404));
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.valueOf(403));
-        }
+    public FeedUpdateResDto updateFeed(@RequestParam(required = false, value = "content") String content,
+                                       @PathVariable Long feedId,
+                                       @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        System.out.println("==========컨트롤러 지나는중==========");
+        System.out.println("content: " + content);
+        return feedService.updateFeed(content, userDetails, feedId);
     }
 
     @DeleteMapping("/feed/{feedId}")
-    public ResponseEntity<?> deleteFeed(@PathVariable Long id) {
-        try {
-            feedService.deleteFeed(id);
-            return ResponseEntity.ok(id);
-        } catch (NullPointerException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.valueOf(404));
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.valueOf(403));
-        }
+    public GlobalResDto deleteFeed(@PathVariable Long feedId,
+                                   @AuthenticationPrincipal UserDetailsImpl userDetails)
+    {
+        System.out.println("==========컨트롤러 지나는중==========");
+        System.out.println("삭제할 feed ID: " + feedId);
+        return feedService.deleteFeed(feedId, userDetails);
+    }
+
+    @PostMapping("/feed")
+    public GlobalResDto addFeed(@RequestPart(required = false, value = "image") List<MultipartFile> image,
+                                @RequestParam(required = false, value = "content") String content,
+                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        System.out.println("==========컨트롤러 지나는중==========");
+        System.out.println("이미지의 갯수: " + image.size());
+        System.out.println("content: " + content);
+        return feedService.addFeed(image, content, userDetails);
+    }
+
+    @GetMapping("/feed/show")
+    public FeedsResDto showFeeds(){
+        System.out.println("==========컨트롤러 지나는중==========");
+        return feedService.showFeeds();
+    }
+
+    @GetMapping("/feed/show/{feedId}")
+    public FeedoneResDto showFeed(@PathVariable Long feedId) {
+        System.out.println("==========컨트롤러 지나는중==========");
+        System.out.println("받은 feedId: " + feedId);
+        return feedService.showFeed(feedId);
     }
 }

@@ -1,61 +1,106 @@
 package com.example.cloneinstargram.feed.service;
 
-import com.amazonaws.AmazonServiceException;
-import com.amazonaws.SdkClientException;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.example.cloneinstargram.account.entity.Account;
-import com.example.cloneinstargram.account.repository.AccountRepository;
-import com.example.cloneinstargram.feed.dto.FeedDeleteResDto;
-import com.example.cloneinstargram.feed.dto.FeedReqDto;
-import com.example.cloneinstargram.feed.dto.FeedResDto;
+import com.example.cloneinstargram.comment.dto.response.CommentResponseDto;
+import com.example.cloneinstargram.comment.entity.Comment;
 import com.example.cloneinstargram.feed.dto.FeedUpdateResDto;
+import com.example.cloneinstargram.feed.dto.FeedoneResDto;
+import com.example.cloneinstargram.feed.dto.FeedsResDto;
+import com.example.cloneinstargram.feed.entity.Awsurl;
 import com.example.cloneinstargram.feed.entity.Feed;
+import com.example.cloneinstargram.feed.entity.S3image;
+import com.example.cloneinstargram.feed.repository.AwsurlRepository;
 import com.example.cloneinstargram.feed.repository.FeedRepository;
+import com.example.cloneinstargram.feed.repository.S3imageRepository;
+import com.example.cloneinstargram.global.dto.GlobalResDto;
+import com.example.cloneinstargram.s3utils.StorageUtil;
+import com.example.cloneinstargram.security.user.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-
-import java.sql.SQLException;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 
 @RequiredArgsConstructor
 @Service
 public class FeedService {
     private final FeedRepository feedRepository;
-    private final AmazonS3Client amazonS3Client;
-    private final AccountRepository accountRepository;
+    private final AwsurlRepository awsurlRepository;
+    private final S3imageRepository s3imageRepository;
+    private final StorageUtil storageUtil;
 
-    public FeedUpdateResDto updateFeed(Long id, Account nickname, FeedReqDto feedReqDto) throws SQLException {
+    public FeedUpdateResDto updateFeed(String content, UserDetailsImpl userDetails, Long feedId) throws IOException {
+        Feed feed = feedRepository.findByIdAndAccount(feedId,userDetails.getAccount())
+                .orElseThrow(() -> new NullPointerException("해당 피드가 존재하지 않거나 수정 권한이 없습니다."));
 
-        Feed feed = feedRepository.findById(id)
-                .orElseThrow(() -> new NullPointerException("해당 피드가 존재하지 않습니다"));
-
-        String image = feed.getImg();
-
-        feed.update(nickname, feedReqDto);
+        feed.setContent(content);
+        System.out.println("받은 수정 content내용: "+ content);
         feedRepository.save(feed);
-        return new FeedUpdateResDto("수정완료", 200, feed.getContent(), nickname.getNickname());
+        return new FeedUpdateResDto("Success updateFeed", HttpStatus.OK.value(),content);
     }
 
-    public FeedDeleteResDto deleteFeed(Long id) {
-        Feed feed = feedRepository.findById(id)
-                .orElseThrow(() -> new NullPointerException("해당 피드가 존재하지 않습니다"));
+    public GlobalResDto deleteFeed(Long feedId, UserDetailsImpl userDetails) {
+        Feed feed = feedRepository.findByIdAndAccount(feedId,userDetails.getAccount())
+                .orElseThrow(() -> new NullPointerException("해당 피드가 존재하지 않거나 삭제 권한이 없습니다."));
 
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("유저정보가 없습니다"));
+        for(S3image img:feed.getImages())   storageUtil.deleteFile(img.getImage());
+        feedRepository.delete(feed);
+        return new GlobalResDto("Success delete", 200);
+    }
 
-//        String imgPath = amazonS3Client.getUrl(bucket, image).toString();
-//        String s3FileName = imgPath;
+    @Transactional
+    public GlobalResDto addFeed(List<MultipartFile> images,
+                                String content,
+                                UserDetailsImpl userDetails){
+        Account account = userDetails.getAccount();
+        Feed feed = new Feed(account, content);
+        List<S3image> s3images = new LinkedList<>();
+        for(MultipartFile image: images)    s3images.add(s3imageRepository.save(new S3image(storageUtil.uploadFile(image), feed)));
+        feed.setImages(s3images);
+        feedRepository.save(feed);
+        return new GlobalResDto("Success addFeed", HttpStatus.OK.value());
+    }
 
-        try {
-            amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, feed.getImg()));
-        } catch (AmazonServiceException e) {
-            e.printStackTrace();
-        } catch (SdkClientException e) {
-            e.printStackTrace();
+    @Transactional(readOnly = true)
+    public FeedsResDto showFeeds() {
+        Awsurl awsUrl = awsurlRepository.findById(1L).orElseThrow(
+                () -> new RuntimeException("S3Url이 비어있어요")
+        );
+        List<Feed> feeds = feedRepository.findAll();
+        List<FeedoneResDto> feedoneResDtos = new LinkedList<>();
+        for(Feed feed: feeds)   {
+            List<String> image = new LinkedList<>();
+            FeedoneResDto feedoneResDto = new FeedoneResDto(feed);
+            for(S3image s3image: feed.getImages())
+                image.add(awsUrl.getUrl()+s3image.getImage());
+            feedoneResDto.setImg(image);
+            feedoneResDtos.add(feedoneResDto);
         }
-        feedRepository.deleteById(id);
-        return new FeedDeleteResDto("삭제가 완료되었습니다", 200);
+        return new FeedsResDto(feedoneResDtos);
+    }
+
+    @Transactional(readOnly = true)
+    public FeedoneResDto showFeed(Long feedId) {
+        Awsurl awsUrl = awsurlRepository.findById(1L).orElseThrow(
+                () -> new RuntimeException("S3Url이 비어있어요")
+        );
+        Feed feed = feedRepository.findById(feedId).orElseThrow(
+                () -> new RuntimeException("찾으시는 포스터가 없습니다.")
+        );
+
+        List<Comment> comments = feed.getComments();
+        List<CommentResponseDto> commentResponseDtos = new LinkedList<>();
+        FeedoneResDto feedoneResDto = new FeedoneResDto(feed);
+        List<String> image = new LinkedList<>();
+        for(S3image s3image: feed.getImages())  image.add(awsUrl.getUrl()+s3image.getImage());
+        for(Comment comment: comments)  commentResponseDtos.add(new CommentResponseDto(comment));
+        feedoneResDto.setImg(image);
+        feedoneResDto.setComments(commentResponseDtos);
+        return feedoneResDto;
     }
 }

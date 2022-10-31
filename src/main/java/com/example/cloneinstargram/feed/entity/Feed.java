@@ -1,42 +1,40 @@
 package com.example.cloneinstargram.feed.entity;
 
 import com.example.cloneinstargram.account.entity.Account;
-import com.example.cloneinstargram.feed.dto.FeedReqDto;
-import com.example.cloneinstargram.feed.dto.FeedResDto;
+import com.example.cloneinstargram.comment.entity.Comment;
+import com.example.cloneinstargram.global.Timestamped;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Setter
 @Getter
 @Entity
 @NoArgsConstructor
-public class Feed {
+public class Feed extends Timestamped {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "nickname", nullable = false)
-    private Account nickname;
+    @JoinColumn(nullable = false)
+    private Account account;
 
     @Column(nullable = false)
     private String content;
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "feed")
     @Column(nullable = false)
-    private String img;
+    private List<S3image> images;
 
-    public Feed(Account nickname, String content, String img) {
-        this.nickname = nickname;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "feed")
+    private List<Comment> comments;
+
+    public Feed(Account account, String content) {
+        this.account = account;
         this.content = content;
-        this.img = img;
-    }
-
-    public void update(Account nickname, FeedReqDto feedReqDto) {
-        this.nickname = nickname;
-        this.content = feedReqDto.getContent();
-//        this.img = s3FileName;
     }
 }

@@ -1,4 +1,4 @@
-package com.example.cloneinstargram.config;
+package com.example.cloneinstargram.s3utils;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -10,23 +10,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class AwsConfig {
-
-    @Value("${cloud.aws.credentials.accessKey}")
+public class StorageConfig {
+    @Value("${cloud.aws.credentials.access-key}")
     private String accessKey;
-
-    @Value("${cloud.aws.credentials.secretKey}")
-    private String secretKey;
-
+    @Value("${cloud.aws.credentials.secret-key}")
+    private String accessSecret;
     @Value("${cloud.aws.region.static}")
     private String region;
 
     @Bean
-    public AmazonS3 amazonS3() {
-        AWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
+    public AmazonS3 s3Client() {
+        AWSCredentials credentials = new BasicAWSCredentials(accessKey, accessSecret);
         return AmazonS3ClientBuilder.standard()
-                .withRegion(region)
-                .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
-                .build();
+                .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                .withRegion(region).build();
     }
 }

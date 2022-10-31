@@ -3,7 +3,6 @@ package com.example.cloneinstargram.feed.service;
 import com.example.cloneinstargram.account.entity.Account;
 import com.example.cloneinstargram.comment.dto.response.CommentResponseDto;
 import com.example.cloneinstargram.comment.entity.Comment;
-import com.example.cloneinstargram.feed.dto.FeedUpdateDto;
 import com.example.cloneinstargram.feed.dto.FeedUpdateResDto;
 import com.example.cloneinstargram.feed.dto.FeedoneResDto;
 import com.example.cloneinstargram.feed.dto.FeedsResDto;

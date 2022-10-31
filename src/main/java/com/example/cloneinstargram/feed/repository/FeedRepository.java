@@ -5,10 +5,12 @@ import com.example.cloneinstargram.feed.entity.Feed;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 
 @Repository
 public interface FeedRepository extends JpaRepository <Feed, Long> {
     Optional<Feed> findByIdAndAccount(Long aLong, Account account);
+    List<Feed> findAllByAccount(Account account);
 }

@@ -50,5 +50,10 @@ public class AccountController {
         return accountService.logout(userDetails.getAccount().getEmail());
     }
 
+    @GetMapping("/account/mypost")
+        public ResponseDto<?> getMyPost(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return accountService.getMyPost(userDetails.getAccount());
+    }
+
 
 }

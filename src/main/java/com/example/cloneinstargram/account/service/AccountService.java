@@ -136,6 +136,6 @@ public class AccountService {
             feedoneResDto.setImg(image);
             feedoneResDtos.add(feedoneResDto);
         }
-        return ResponseDto.success(new FeedsResDto(feedoneResDtos));
+        return ResponseDto.success(new FeedsResDto(feedoneResDtos,account));
     }
 }

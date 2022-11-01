@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-
 public class AccountService {
     @Autowired
     private  JwtUtil jwtUtil;
@@ -128,7 +127,7 @@ public class AccountService {
     public ResponseDto<?> getMyPost(Account account) {
         System.out.println(account.getNickname() + " 님의 feed를 가져옵니다");
         // var feedoneResDtoList = feedRepository.findAllByAccount(account).stream().map(FeedoneResDto::new).collect(Collectors.toList());
-        List<Feed> feeds = feedRepository.findAll();
+        List<Feed> feeds = feedRepository.findAllByAccount(account);
         List<FeedoneResDto> feedoneResDtos = new LinkedList<>();
         for (Feed feed : feeds) {
             List<String> image = new LinkedList<>();

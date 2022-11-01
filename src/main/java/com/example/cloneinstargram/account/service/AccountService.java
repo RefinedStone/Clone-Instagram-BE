@@ -7,9 +7,6 @@ import com.example.cloneinstargram.account.entity.RefreshToken;
 import com.example.cloneinstargram.account.repository.AccountRepository;
 import com.example.cloneinstargram.account.repository.RefreshTokenRepository;
 import com.example.cloneinstargram.feed.dto.FeedoneResDto;
-import com.example.cloneinstargram.feed.entity.Awsurl;
-import com.example.cloneinstargram.feed.entity.Feed;
-import com.example.cloneinstargram.feed.repository.AwsurlRepository;
 import com.example.cloneinstargram.feed.repository.FeedRepository;
 import com.example.cloneinstargram.global.dto.GlobalResDto;
 import com.example.cloneinstargram.global.dto.ResponseDto;
@@ -23,8 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -37,8 +32,6 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final FeedRepository feedRepository;
-
-    private final AwsurlRepository awsurlRepository;
 
     @Transactional
     public GlobalResDto signup(AccountReqDto accountReqDto) {
@@ -112,7 +105,7 @@ public class AccountService {
     //내 포스트 가져오기
     public ResponseDto<?> getMyPost(Account account) {
         System.out.println(account.getNickname()+" 님의 feed를 가져옵니다");
-        var feedoneResDtoList = feedRepository.findAllByAccount(account).stream().map((a) -> new FeedoneResDto(a, awsurlRepository.findById(1L).get())).collect(Collectors.toList());
+        var feedoneResDtoList = feedRepository.findAllByAccount(account).stream().map(FeedoneResDto::new).collect(Collectors.toList());
         return ResponseDto.success(feedoneResDtoList);
     }
 }

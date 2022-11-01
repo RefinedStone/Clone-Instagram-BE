@@ -5,6 +5,7 @@ import com.example.cloneinstargram.account.repository.AccountRepository;
 import com.example.cloneinstargram.feed.entity.Feed;
 import com.example.cloneinstargram.feed.repository.FeedRepository;
 import com.example.cloneinstargram.global.dto.GlobalResDto;
+import com.example.cloneinstargram.like.dto.LikeAddAndUnlikeResDto;
 import com.example.cloneinstargram.like.dto.LikeResDto;
 import com.example.cloneinstargram.like.entity.Like;
 import com.example.cloneinstargram.like.repository.LikeRepository;
@@ -23,7 +24,7 @@ public class LikeService {
     private final AccountRepository accountRepository;
 
     @Transactional
-    public GlobalResDto addAndUnLike(Long feedId, UserDetailsImpl userDetails) throws SQLException {
+    public LikeAddAndUnlikeResDto addAndUnLike(Long feedId, UserDetailsImpl userDetails) throws SQLException {
         Account account = accountRepository.findById(userDetails.getAccount().getId())
                 .orElseThrow(()-> new RuntimeException("로그인 유저 정보가 없습니다."));
         Feed feed = feedRepository.findById(feedId)
@@ -31,12 +32,12 @@ public class LikeService {
 
         if(likeRepository.existsByAccountIdAndFeedId(account.getId(),feed.getId())) {
             likeRepository.deleteById(feedId);
-            return new GlobalResDto("좋아요 취소", 200);
+            return new LikeAddAndUnlikeResDto ("좋아요 취소", Boolean.FALSE);
         } else {
         Like likes = new Like(account, feed);
         likeRepository.save(likes);}
 
-        return new GlobalResDto("좋아요", 200);
+        return new LikeAddAndUnlikeResDto ("좋아요", Boolean.TRUE);
     }
 
     @Transactional

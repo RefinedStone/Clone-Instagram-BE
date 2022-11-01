@@ -111,6 +111,7 @@ public class AccountService {
 
     //내 포스트 가져오기
     public ResponseDto<?> getMyPost(Account account) {
+        System.out.println(account.getNickname()+" 님의 feed를 가져옵니다");
         var feedoneResDtoList = feedRepository.findAllByAccount(account).stream().map((a) -> new FeedoneResDto(a, awsurlRepository.findById(1L).get())).collect(Collectors.toList());
         return ResponseDto.success(feedoneResDtoList);
     }

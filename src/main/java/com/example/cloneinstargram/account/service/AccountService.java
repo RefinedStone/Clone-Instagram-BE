@@ -7,31 +7,52 @@ import com.example.cloneinstargram.account.entity.RefreshToken;
 import com.example.cloneinstargram.account.repository.AccountRepository;
 import com.example.cloneinstargram.account.repository.RefreshTokenRepository;
 import com.example.cloneinstargram.feed.dto.FeedoneResDto;
+import com.example.cloneinstargram.feed.dto.FeedsResDto;
+import com.example.cloneinstargram.feed.entity.Feed;
+import com.example.cloneinstargram.feed.entity.S3image;
 import com.example.cloneinstargram.feed.repository.FeedRepository;
 import com.example.cloneinstargram.global.dto.GlobalResDto;
 import com.example.cloneinstargram.global.dto.ResponseDto;
 import com.example.cloneinstargram.jwt.dto.TokenDto;
 import com.example.cloneinstargram.jwt.util.JwtUtil;
 import com.example.cloneinstargram.security.user.UserDetailsImpl;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
-public class AccountService {
 
-    private final JwtUtil jwtUtil;
-    private final PasswordEncoder passwordEncoder;
-    private final AccountRepository accountRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
-    private final FeedRepository feedRepository;
+public class AccountService {
+    @Autowired
+    private  JwtUtil jwtUtil;
+    @Autowired
+    private  PasswordEncoder passwordEncoder;
+    @Autowired
+    private  AccountRepository accountRepository;
+    @Autowired
+    private  RefreshTokenRepository refreshTokenRepository;
+    @Autowired
+    private  FeedRepository feedRepository;
+
+    @Value("${bucket.pathName}")
+    private String s3Path;
+
+//    @Autowired
+//    AccountService(JwtUtil jwtUtil, PasswordEncoder passwordEncoder, AccountRepository accountRepository, RefreshTokenRepository refreshTokenRepository, FeedRepository feedRepository) {
+//        this.jwtUtil = jwtUtil;
+//        this.passwordEncoder = passwordEncoder;
+//        this.accountRepository = accountRepository;
+//        this.refreshTokenRepository = refreshTokenRepository;
+//        this.feedRepository = feedRepository;
+//    }
 
     @Transactional
     public GlobalResDto signup(AccountReqDto accountReqDto) {
@@ -103,9 +124,20 @@ public class AccountService {
 
 
     //내 포스트 가져오기
+
     public ResponseDto<?> getMyPost(Account account) {
-        System.out.println(account.getNickname()+" 님의 feed를 가져옵니다");
-        var feedoneResDtoList = feedRepository.findAllByAccount(account).stream().map(FeedoneResDto::new).collect(Collectors.toList());
-        return ResponseDto.success(feedoneResDtoList);
+        System.out.println(account.getNickname() + " 님의 feed를 가져옵니다");
+        // var feedoneResDtoList = feedRepository.findAllByAccount(account).stream().map(FeedoneResDto::new).collect(Collectors.toList());
+        List<Feed> feeds = feedRepository.findAll();
+        List<FeedoneResDto> feedoneResDtos = new LinkedList<>();
+        for (Feed feed : feeds) {
+            List<String> image = new LinkedList<>();
+            FeedoneResDto feedoneResDto = new FeedoneResDto(feed);
+            for (S3image s3image : feed.getImages())
+                image.add(s3Path + s3image.getImage());
+            feedoneResDto.setImg(image);
+            feedoneResDtos.add(feedoneResDto);
+        }
+        return ResponseDto.success(new FeedsResDto(feedoneResDtos));
     }
 }

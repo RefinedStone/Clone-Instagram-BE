@@ -9,7 +9,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -17,16 +16,22 @@ import java.util.List;
 public class LikeController {
     private final LikeService likeService;
 
-    @PostMapping("/like/{id}")
-    public GlobalResDto addLike(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails)
+    @PostMapping("/like/{feedId}")
+    public GlobalResDto addLike(@PathVariable Long feedId, @AuthenticationPrincipal UserDetailsImpl userDetails)
             throws SQLException {
         System.out.println("==========컨트롤러 지나는중==========");
-        return likeService.addLike(id, userDetails);
+        return likeService.addLike(feedId, userDetails);
     }
+
     @GetMapping("/like/{feedId}")
-    public List<LikeResDto> getFeedWithLikes(@PathVariable Long feedId, @AuthenticationPrincipal UserDetailsImpl userDetails)
-            throws SQLException {
+    public LikeResDto getFeedWithLikes(@PathVariable Long feedId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         System.out.println("==========컨트롤러 지나는중==========");
         return likeService.getFeedWithLikes(feedId, userDetails);
+    }
+
+    @DeleteMapping("/like/{likeId}")
+    public String unlike(@PathVariable Long likeId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        System.out.println("==========컨트롤러 지나는중==========");
+        return likeService.unlike(likeId, userDetails);
     }
 }

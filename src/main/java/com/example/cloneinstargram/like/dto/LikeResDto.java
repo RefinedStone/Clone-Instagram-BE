@@ -8,13 +8,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class LikeResDto {
-    private Long id;
     private String content;
-    private int likesSize;
+    private int likesCount;
+    private Boolean liked;
 
-    public LikeResDto(Long id, String content, int likesSize) {
-        this.id = id;
+    public LikeResDto(String content, int likesCount, boolean liked) {
+
         this.content = content;
-        this.likesSize = likesSize;
+        this.likesCount = likesCount;
+        this.liked = liked;
     }
 }

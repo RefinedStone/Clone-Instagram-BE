@@ -11,11 +11,13 @@ import com.example.cloneinstargram.feed.dto.FeedsResDto;
 import com.example.cloneinstargram.feed.entity.Feed;
 import com.example.cloneinstargram.feed.entity.S3image;
 import com.example.cloneinstargram.feed.repository.FeedRepository;
+import com.example.cloneinstargram.feed.service.FeedService;
 import com.example.cloneinstargram.global.dto.GlobalResDto;
 import com.example.cloneinstargram.global.dto.ResponseDto;
 import com.example.cloneinstargram.jwt.dto.TokenDto;
 import com.example.cloneinstargram.jwt.util.JwtUtil;
 import com.example.cloneinstargram.security.user.UserDetailsImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -30,28 +32,25 @@ import java.util.Optional;
 
 @Service
 public class AccountService {
-    @Autowired
-    private  JwtUtil jwtUtil;
-    @Autowired
-    private  PasswordEncoder passwordEncoder;
-    @Autowired
-    private  AccountRepository accountRepository;
-    @Autowired
-    private  RefreshTokenRepository refreshTokenRepository;
-    @Autowired
-    private  FeedRepository feedRepository;
+
+    private final JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
+    private final AccountRepository accountRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final FeedRepository feedRepository;
 
     @Value("${bucket.pathName}")
     private String s3Path;
 
-//    @Autowired
-//    AccountService(JwtUtil jwtUtil, PasswordEncoder passwordEncoder, AccountRepository accountRepository, RefreshTokenRepository refreshTokenRepository, FeedRepository feedRepository) {
-//        this.jwtUtil = jwtUtil;
-//        this.passwordEncoder = passwordEncoder;
-//        this.accountRepository = accountRepository;
-//        this.refreshTokenRepository = refreshTokenRepository;
-//        this.feedRepository = feedRepository;
-//    }
+    @Autowired
+    public AccountService(JwtUtil jwtUtil, PasswordEncoder passwordEncoder, AccountRepository accountRepository,
+                          RefreshTokenRepository refreshTokenRepository, FeedRepository feedRepository){
+        this.jwtUtil = jwtUtil;
+        this.passwordEncoder = passwordEncoder;
+        this.accountRepository = accountRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
+        this.feedRepository = feedRepository;
+    }
 
     @Transactional
     public GlobalResDto signup(AccountReqDto accountReqDto) {
@@ -137,6 +136,6 @@ public class AccountService {
             feedoneResDto.setImg(image);
             feedoneResDtos.add(feedoneResDto);
         }
-        return ResponseDto.success(new FeedsResDto(feedoneResDtos, account));
+        return ResponseDto.success(new FeedsResDto(feedoneResDtos));
     }
 }

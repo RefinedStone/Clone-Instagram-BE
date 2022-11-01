@@ -15,7 +15,6 @@ import com.example.cloneinstargram.s3utils.StorageUtil;
 import com.example.cloneinstargram.security.user.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,13 +29,16 @@ import java.util.List;
 public class FeedService {
     @Value("${bucket.pathName}")
     private String s3Path;
-    @Autowired
-    private FeedRepository feedRepository;
-    @Autowired
-    private S3imageRepository s3imageRepository;
-    @Autowired
-    private StorageUtil storageUtil;
+    private final FeedRepository feedRepository;
+    private final S3imageRepository s3imageRepository;
+    private final StorageUtil storageUtil;
 
+    @Autowired
+    public FeedService(FeedRepository feedRepository, S3imageRepository s3imageRepository, StorageUtil storageUtil){
+        this.feedRepository = feedRepository;
+        this.s3imageRepository = s3imageRepository;
+        this.storageUtil = storageUtil;
+    }
 
     public FeedUpdateResDto updateFeed(String content, UserDetailsImpl userDetails, Long feedId) throws IOException {
         Feed feed = feedRepository.findByIdAndAccount(feedId,userDetails.getAccount())
@@ -73,8 +75,6 @@ public class FeedService {
 
     @Transactional(readOnly = true)
     public FeedsResDto showFeeds() {
-//        List<Feed> feeds = feedRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
-//        var feed_list = feeds.stream().sorted(Comparator.comparing(Feed::getId).reversed());
         List<Feed> feeds = feedRepository.findAllByOrderByCreatedAtDesc();
         List<FeedoneResDto> feedoneResDtos = new LinkedList<>();
         for(Feed feed: feeds)   {

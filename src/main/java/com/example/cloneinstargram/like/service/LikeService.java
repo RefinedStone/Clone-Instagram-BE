@@ -31,6 +31,7 @@ public class LikeService {
 
         if(likeRepository.existsByAccountIdAndFeedId(account.getId(),feed.getId())) {
             likeRepository.deleteById(feedId);
+            return new GlobalResDto("좋아요 취소", 200);
         } else {
         Like likes = new Like(account, feed);
         likeRepository.save(likes);}

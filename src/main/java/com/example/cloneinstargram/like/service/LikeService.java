@@ -32,12 +32,12 @@ public class LikeService {
 
         if(likeRepository.existsByAccountIdAndFeedId(account.getId(),feed.getId())) {
             likeRepository.deleteById(feedId);
-            return new LikeAddAndUnlikeResDto ("좋아요 취소", Boolean.FALSE);
+            return new LikeAddAndUnlikeResDto ("좋아요 취소", false);
         } else {
         Like likes = new Like(account, feed);
         likeRepository.save(likes);}
 
-        return new LikeAddAndUnlikeResDto ("좋아요", Boolean.TRUE);
+        return new LikeAddAndUnlikeResDto ("좋아요", true);
     }
 
     @Transactional

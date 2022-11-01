@@ -9,9 +9,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class LikeAddAndUnlikeResDto {
     private String msg;
-    private Boolean liked;
+    private boolean liked;
 
-    public LikeAddAndUnlikeResDto(String msg, Boolean liked) {
+    public LikeAddAndUnlikeResDto(String msg, boolean liked) {
 
         this.msg = msg;
         this.liked = liked;

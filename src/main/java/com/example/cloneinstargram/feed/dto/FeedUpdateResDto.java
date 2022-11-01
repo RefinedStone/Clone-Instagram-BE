@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FeedUpdateResDto {
     private String msg;
-    private int statusCode;
+    private int status;
     private String content;
 
-    public FeedUpdateResDto (String msg, int statusCode, String content) {
+    public FeedUpdateResDto (String msg, int status, String content) {
         this.msg = msg;
-        this.statusCode= statusCode;
+        this.status = status;
         this.content = content;
     }
 }

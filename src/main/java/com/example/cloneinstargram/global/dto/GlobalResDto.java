@@ -12,5 +12,4 @@ public class GlobalResDto {
         this.msg = msg;
         this.statusCode = statusCode;
     }
-
 }

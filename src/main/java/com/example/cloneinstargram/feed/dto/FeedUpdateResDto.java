@@ -11,12 +11,10 @@ public class FeedUpdateResDto {
     private String msg;
     private int status;
     private String content;
-    private String modifiedAt;
 
-    public FeedUpdateResDto (String msg, int status, String content, Feed feed) {
+    public FeedUpdateResDto (String msg, int status, String content) {
         this.msg = msg;
         this.status = status;
         this.content = content;
-        this.modifiedAt = FeedTimeConverter.feedConvertTime ( feed.getModifiedAt () );
     }
 }

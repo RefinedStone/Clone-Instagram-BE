@@ -38,7 +38,7 @@ public class FeedService {
         feed.setContent(content);
         System.out.println("받은 수정 content내용: "+ content);
         feedRepository.save(feed);
-        return new FeedUpdateResDto("Success updateFeed", HttpStatus.OK.value(),content, feed);
+        return new FeedUpdateResDto("Success updateFeed", HttpStatus.OK.value(),content);
     }
 
     public GlobalResDto deleteFeed(Long feedId, UserDetailsImpl userDetails) {

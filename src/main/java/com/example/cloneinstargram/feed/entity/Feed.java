@@ -44,4 +44,5 @@ public class Feed extends Timestamped {
     public int getCountsLikesWithFeed() {
         return likes.size();
     }
+
 }

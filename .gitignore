@@ -34,4 +34,5 @@ replay_pid*
 /build/*
 
 # idea
-.idea/
+.idea
+/src/main/resources/application.yml

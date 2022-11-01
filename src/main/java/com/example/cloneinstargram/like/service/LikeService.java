@@ -23,17 +23,18 @@ public class LikeService {
     private final AccountRepository accountRepository;
 
     @Transactional
-    public GlobalResDto addLike(Long feedId, UserDetailsImpl userDetails) throws SQLException {
+    public GlobalResDto addAndUnLike(Long feedId, UserDetailsImpl userDetails) throws SQLException {
         Account account = accountRepository.findById(userDetails.getAccount().getId())
                 .orElseThrow(()-> new RuntimeException("로그인 유저 정보가 없습니다."));
         Feed feed = feedRepository.findById(feedId)
                 .orElseThrow(()-> new NullPointerException("해당 피드가 없습니다."));
 
         if(likeRepository.existsByAccountIdAndFeedId(account.getId(),feed.getId())) {
-            throw new RuntimeException("좋아요는 한번만 가능합니다");
-        }
+            likeRepository.deleteById(feedId);
+        } else {
         Like likes = new Like(account, feed);
-        likeRepository.save(likes);
+        likeRepository.save(likes);}
+
         return new GlobalResDto("좋아요", 200);
     }
 
@@ -46,17 +47,5 @@ public class LikeService {
 
         feed.getCountsLikesWithFeed();
         return new LikeResDto(feed.getContent(),feed.getCountsLikesWithFeed(),true);
-    }
-    @Transactional
-    public String unlike(Long likeId, UserDetailsImpl userDetails) {
-
-        Account account = accountRepository.findById(userDetails.getAccount().getId())
-                .orElseThrow(() -> new RuntimeException("유저 권한이 없습니다."));
-
-        Feed feed = feedRepository.findById(likeId)
-                .orElseThrow(() -> new NullPointerException("해당 피드가 없습니다."));
-
-        likeRepository.deleteById(likeId);
-        return "좋아요 취소";
     }
 }

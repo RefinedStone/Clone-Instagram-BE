@@ -17,21 +17,15 @@ public class LikeController {
     private final LikeService likeService;
 
     @PostMapping("/like/{feedId}")
-    public GlobalResDto addLike(@PathVariable Long feedId, @AuthenticationPrincipal UserDetailsImpl userDetails)
+    public GlobalResDto addAndUnLike(@PathVariable Long feedId, @AuthenticationPrincipal UserDetailsImpl userDetails)
             throws SQLException {
         System.out.println("==========컨트롤러 지나는중==========");
-        return likeService.addLike(feedId, userDetails);
+        return likeService.addAndUnLike(feedId, userDetails);
     }
 
     @GetMapping("/like/{feedId}")
     public LikeResDto getFeedWithLikes(@PathVariable Long feedId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         System.out.println("==========컨트롤러 지나는중==========");
         return likeService.getFeedWithLikes(feedId, userDetails);
-    }
-
-    @DeleteMapping("/like/{likeId}")
-    public String unlike(@PathVariable Long likeId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        System.out.println("==========컨트롤러 지나는중==========");
-        return likeService.unlike(likeId, userDetails);
     }
 }

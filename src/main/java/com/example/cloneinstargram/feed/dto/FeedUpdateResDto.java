@@ -1,5 +1,7 @@
 package com.example.cloneinstargram.feed.dto;
 
+import com.example.cloneinstargram.feed.entity.Feed;
+import com.example.cloneinstargram.global.FeedTimeConverter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

@@ -15,6 +15,7 @@ import com.example.cloneinstargram.s3utils.StorageUtil;
 import com.example.cloneinstargram.security.user.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,9 +73,12 @@ public class FeedService {
 
     @Transactional(readOnly = true)
     public FeedsResDto showFeeds() {
-        List<Feed> feeds = feedRepository.findAll();
+//        List<Feed> feeds = feedRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+//        var feed_list = feeds.stream().sorted(Comparator.comparing(Feed::getId).reversed());
+        List<Feed> feeds = feedRepository.findAllByOrderByCreatedAtDesc();
         List<FeedoneResDto> feedoneResDtos = new LinkedList<>();
         for(Feed feed: feeds)   {
+            System.out.println("feed의 id: " + feed.getId());
             List<String> image = new LinkedList<>();
             FeedoneResDto feedoneResDto = new FeedoneResDto(feed);
             for(S3image s3image: feed.getImages())

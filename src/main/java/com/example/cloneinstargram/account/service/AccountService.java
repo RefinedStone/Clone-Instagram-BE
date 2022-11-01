@@ -127,7 +127,7 @@ public class AccountService {
     public ResponseDto<?> getMyPost(Account account) {
         System.out.println(account.getNickname() + " 님의 feed를 가져옵니다");
         // var feedoneResDtoList = feedRepository.findAllByAccount(account).stream().map(FeedoneResDto::new).collect(Collectors.toList());
-        List<Feed> feeds = feedRepository.findAllByAccount(account);
+        List<Feed> feeds = feedRepository.findAllByAccountOrderByCreatedAtDesc(account);
         List<FeedoneResDto> feedoneResDtos = new LinkedList<>();
         for (Feed feed : feeds) {
             List<String> image = new LinkedList<>();
@@ -137,6 +137,6 @@ public class AccountService {
             feedoneResDto.setImg(image);
             feedoneResDtos.add(feedoneResDto);
         }
-        return ResponseDto.success(new FeedsResDto(feedoneResDtos));
+        return ResponseDto.success(new FeedsResDto(feedoneResDtos, account));
     }
 }

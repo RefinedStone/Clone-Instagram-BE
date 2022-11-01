@@ -12,5 +12,6 @@ import java.util.Optional;
 @Repository
 public interface FeedRepository extends JpaRepository <Feed, Long> {
     Optional<Feed> findByIdAndAccount(Long aLong, Account account);
-    List<Feed> findAllByAccount(Account account);
+    List<Feed> findAllByAccountOrderByCreatedAtDesc(Account account);
+    List<Feed> findAllByOrderByCreatedAtDesc();
 }

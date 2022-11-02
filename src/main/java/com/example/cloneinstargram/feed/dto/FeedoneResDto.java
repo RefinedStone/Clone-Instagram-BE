@@ -18,6 +18,7 @@ public class FeedoneResDto {
     private String nickname;
     private List<String> img;
     private String createdAt;
+    private int like_count;
 
     private List<CommentResponseDto> comments;
 
@@ -26,6 +27,7 @@ public class FeedoneResDto {
         this.content = feed.getContent();
         this.nickname = feed.getAccount().getNickname();
         this.createdAt = FeedTimeConverter.feedConvertTime ( feed.getCreatedAt () );
+        this.like_count = feed.getLikes().size();
     }
 
     public FeedoneResDto(Feed feed, List<CommentResponseDto> comments){

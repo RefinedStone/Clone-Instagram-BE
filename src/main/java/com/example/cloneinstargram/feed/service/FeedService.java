@@ -35,7 +35,6 @@ public class FeedService {
     private final LikeRepository likeRepository;
     private final StorageUtil storageUtil;
 
-
     @Autowired
     public FeedService(FeedRepository feedRepository, S3imageRepository s3imageRepository,
                        StorageUtil storageUtil, LikeRepository likeRepository){

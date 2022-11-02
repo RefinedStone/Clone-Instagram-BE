@@ -31,7 +31,7 @@ public class LikeService {
                 .orElseThrow(()-> new NullPointerException("해당 피드가 없습니다."));
 
         if(likeRepository.existsByAccountIdAndFeedId(account.getId(),feed.getId())) {
-            likeRepository.deleteById(feedId);
+            likeRepository.deleteByAccountIdAndFeedId(account.getId(),feed.getId());
             return new LikeAddAndUnlikeResDto ("좋아요 취소", false);
         } else {
         Like likes = new Like(account, feed);

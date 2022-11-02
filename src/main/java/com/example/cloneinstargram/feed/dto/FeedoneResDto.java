@@ -1,5 +1,6 @@
 package com.example.cloneinstargram.feed.dto;
 
+import com.example.cloneinstargram.account.entity.Account;
 import com.example.cloneinstargram.comment.dto.response.CommentResponseDto;
 import com.example.cloneinstargram.feed.entity.Feed;
 import com.example.cloneinstargram.global.FeedTimeConverter;
@@ -19,15 +20,17 @@ public class FeedoneResDto {
     private List<String> img;
     private String createdAt;
     private int like_count;
+    private boolean like_state;
 
     private List<CommentResponseDto> comments;
 
-    public FeedoneResDto(Feed feed){
+    public FeedoneResDto(Feed feed, boolean like_state){
         this.id = feed.getId();
         this.content = feed.getContent();
         this.nickname = feed.getAccount().getNickname();
         this.createdAt = FeedTimeConverter.feedConvertTime ( feed.getCreatedAt () );
         this.like_count = feed.getLikes().size();
+        this.like_state = like_state;
     }
 
     public FeedoneResDto(Feed feed, List<CommentResponseDto> comments){

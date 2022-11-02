@@ -53,15 +53,16 @@ public class FeedController {
     }
 
     @GetMapping("/feed/show")
-    public FeedsResDto showFeeds(){
+    public FeedsResDto showFeeds(@AuthenticationPrincipal UserDetailsImpl userDetails){
         System.out.println("==========컨트롤러 지나는중==========");
-        return feedService.showFeeds();
+        return feedService.showFeeds(userDetails.getAccount());
     }
 
     @GetMapping("/feed/show/{feedId}")
-    public FeedoneResDto showFeed(@PathVariable Long feedId) {
+    public FeedoneResDto showFeed(@PathVariable Long feedId,
+                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
         System.out.println("==========컨트롤러 지나는중==========");
         System.out.println("받은 feedId: " + feedId);
-        return feedService.showFeed(feedId);
+        return feedService.showFeed(feedId, userDetails.getAccount());
     }
 }

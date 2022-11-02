@@ -15,6 +15,7 @@ import com.example.cloneinstargram.global.dto.GlobalResDto;
 import com.example.cloneinstargram.global.dto.ResponseDto;
 import com.example.cloneinstargram.jwt.dto.TokenDto;
 import com.example.cloneinstargram.jwt.util.JwtUtil;
+import com.example.cloneinstargram.like.repository.LikeRepository;
 import com.example.cloneinstargram.security.user.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,18 +37,21 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final FeedRepository feedRepository;
+    private final LikeRepository likeRepository;
 
     @Value("${bucket.pathName}")
     private String s3Path;
 
     @Autowired
     public AccountService(JwtUtil jwtUtil, PasswordEncoder passwordEncoder, AccountRepository accountRepository,
-                          RefreshTokenRepository refreshTokenRepository, FeedRepository feedRepository){
+                          RefreshTokenRepository refreshTokenRepository, FeedRepository feedRepository,
+                          LikeRepository likeRepository){
         this.jwtUtil = jwtUtil;
         this.passwordEncoder = passwordEncoder;
         this.accountRepository = accountRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.feedRepository = feedRepository;
+        this.likeRepository = likeRepository;
     }
 
     @Transactional
@@ -128,7 +132,7 @@ public class AccountService {
         List<FeedoneResDto> feedoneResDtos = new LinkedList<>();
         for (Feed feed : feeds) {
             List<String> image = new LinkedList<>();
-            FeedoneResDto feedoneResDto = new FeedoneResDto(feed);
+            FeedoneResDto feedoneResDto = new FeedoneResDto(feed, likeRepository.existsByAccountIdAndFeedId(account.getId(), feed.getId()));
             for (S3image s3image : feed.getImages())
                 image.add(s3Path + s3image.getImage());
             feedoneResDto.setImg(image);

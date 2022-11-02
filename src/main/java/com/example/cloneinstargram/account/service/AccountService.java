@@ -70,7 +70,7 @@ public class AccountService {
     }
 
     @Transactional
-    public GlobalResDto login(LoginReqDto loginReqDto, HttpServletResponse response) {
+    public ResponseDto<?> login(LoginReqDto loginReqDto, HttpServletResponse response) {
 
         Account account = accountRepository.findByEmail(loginReqDto.getEmail()).orElseThrow(
                 () -> new RuntimeException("Not found Account")
@@ -92,8 +92,8 @@ public class AccountService {
         }
 
         setHeader(response, tokenDto);
-
-        return new GlobalResDto("Success Login", HttpStatus.OK.value());
+        System.out.println(account.getNickname() +"님 로그인 하셨습니다");
+        return ResponseDto.success(account.getNickname());
 
     }
 

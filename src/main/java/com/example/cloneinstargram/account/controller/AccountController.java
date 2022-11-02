@@ -29,7 +29,7 @@ public class AccountController {
     }
 
     @PostMapping("/account/login")
-    public GlobalResDto login(@RequestBody @Valid LoginReqDto loginReqDto, HttpServletResponse response) {
+    public ResponseDto<?> login(@RequestBody @Valid LoginReqDto loginReqDto, HttpServletResponse response) {
         return accountService.login(loginReqDto, response);
     }
 

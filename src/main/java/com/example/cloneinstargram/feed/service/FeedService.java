@@ -11,6 +11,7 @@ import com.example.cloneinstargram.feed.entity.S3image;
 import com.example.cloneinstargram.feed.repository.FeedRepository;
 import com.example.cloneinstargram.feed.repository.S3imageRepository;
 import com.example.cloneinstargram.global.dto.GlobalResDto;
+import com.example.cloneinstargram.like.repository.LikeRepository;
 import com.example.cloneinstargram.s3utils.StorageUtil;
 import com.example.cloneinstargram.security.user.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +32,16 @@ public class FeedService {
     private String s3Path;
     private final FeedRepository feedRepository;
     private final S3imageRepository s3imageRepository;
+    private final LikeRepository likeRepository;
     private final StorageUtil storageUtil;
 
     @Autowired
-    public FeedService(FeedRepository feedRepository, S3imageRepository s3imageRepository, StorageUtil storageUtil){
+    public FeedService(FeedRepository feedRepository, S3imageRepository s3imageRepository,
+                       StorageUtil storageUtil, LikeRepository likeRepository){
         this.feedRepository = feedRepository;
         this.s3imageRepository = s3imageRepository;
         this.storageUtil = storageUtil;
+        this.likeRepository = likeRepository;
     }
 
     public FeedUpdateResDto updateFeed(String content, UserDetailsImpl userDetails, Long feedId) throws IOException {
@@ -74,13 +78,13 @@ public class FeedService {
     }
 
     @Transactional(readOnly = true)
-    public FeedsResDto showFeeds() {
+    public FeedsResDto showFeeds(Account account) {
         List<Feed> feeds = feedRepository.findAllByOrderByCreatedAtDesc();
         List<FeedoneResDto> feedoneResDtos = new LinkedList<>();
         for(Feed feed: feeds)   {
             System.out.println("feed의 id: " + feed.getId());
             List<String> image = new LinkedList<>();
-            FeedoneResDto feedoneResDto = new FeedoneResDto(feed);
+            FeedoneResDto feedoneResDto = new FeedoneResDto(feed, likeRepository.existsByAccountIdAndFeedId(account.getId(), feed.getId()));
             for(S3image s3image: feed.getImages())
                 image.add(s3Path+s3image.getImage());
             feedoneResDto.setImg(image);
@@ -90,14 +94,14 @@ public class FeedService {
     }
 
     @Transactional(readOnly = true)
-    public FeedoneResDto showFeed(Long feedId) {
+    public FeedoneResDto showFeed(Long feedId, Account account) {
         Feed feed = feedRepository.findById(feedId).orElseThrow(
                 () -> new RuntimeException("찾으시는 포스터가 없습니다.")
         );
 
         List<Comment> comments = feed.getComments();
         List<CommentResponseDto> commentResponseDtos = new LinkedList<>();
-        FeedoneResDto feedoneResDto = new FeedoneResDto(feed);
+        FeedoneResDto feedoneResDto = new FeedoneResDto(feed, likeRepository.existsByAccountIdAndFeedId(account.getId(), feed.getId()));
         List<String> image = new LinkedList<>();
         for(S3image s3image: feed.getImages())  image.add(s3Path+s3image.getImage());
         for(Comment comment: comments)  commentResponseDtos.add(new CommentResponseDto(comment));

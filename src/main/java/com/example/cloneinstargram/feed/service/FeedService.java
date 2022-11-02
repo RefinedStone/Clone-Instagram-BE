@@ -29,13 +29,16 @@ import java.util.List;
 public class FeedService {
     @Value("${bucket.pathName}")
     private String s3Path;
-    @Autowired
-    private FeedRepository feedRepository;
-    @Autowired
-    private S3imageRepository s3imageRepository;
-    @Autowired
-    private StorageUtil storageUtil;
+    private final FeedRepository feedRepository;
+    private final S3imageRepository s3imageRepository;
+    private final StorageUtil storageUtil;
 
+    @Autowired
+    public FeedService(FeedRepository feedRepository, S3imageRepository s3imageRepository, StorageUtil storageUtil){
+        this.feedRepository = feedRepository;
+        this.s3imageRepository = s3imageRepository;
+        this.storageUtil = storageUtil;
+    }
 
     public FeedUpdateResDto updateFeed(String content, UserDetailsImpl userDetails, Long feedId) throws IOException {
         Feed feed = feedRepository.findByIdAndAccount(feedId,userDetails.getAccount())
@@ -72,9 +75,10 @@ public class FeedService {
 
     @Transactional(readOnly = true)
     public FeedsResDto showFeeds() {
-        List<Feed> feeds = feedRepository.findAll();
+        List<Feed> feeds = feedRepository.findAllByOrderByCreatedAtDesc();
         List<FeedoneResDto> feedoneResDtos = new LinkedList<>();
         for(Feed feed: feeds)   {
+            System.out.println("feed의 id: " + feed.getId());
             List<String> image = new LinkedList<>();
             FeedoneResDto feedoneResDto = new FeedoneResDto(feed);
             for(S3image s3image: feed.getImages())

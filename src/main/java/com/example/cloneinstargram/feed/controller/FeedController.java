@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
@@ -39,21 +41,12 @@ public class FeedController {
         return feedService.deleteFeed(feedId, userDetails);
     }
 
-//    @PostMapping("/feed")
-//    public GlobalResDto addFeed(@RequestPart(required = false, value = "image") List<MultipartFile> image,
-//                                @RequestParam(required = false, value = "content") String content,
-//                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        System.out.println("==========컨트롤러 지나는중==========");
-//        System.out.println("이미지의 갯수: " + image.size());
-//        System.out.println("content: " + content);
-//        return feedService.addFeed(image, content, userDetails);
-//    }
-
     // 2번째 버전
     @PostMapping("/feed")
     public GlobalResDto addFeed(MultipartHttpServletRequest request,
                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
         System.out.println("==========컨트롤러 지나는중==========");
+        System.out.println(request);
         List<MultipartFile> images = request.getFiles("image");
         String content = request.getParameter("content");
         System.out.println("이미지의 갯수: " + images.size());

@@ -3,10 +3,11 @@ Clone-Instagram-BE
 
 
 # 1. 와이어프레임
-
-![Untitled (2)](https://user-images.githubusercontent.com/113455892/199663757-681bf538-5003-4788-855d-e65ed36f06b0.png)
-![Untitled (1)](https://user-images.githubusercontent.com/113455892/199663770-13f380ae-295c-440d-ac63-3e42ed9cf3e4.png)
 ![Untitled](https://user-images.githubusercontent.com/113455892/199663786-ddf54597-3a8f-4921-b3fb-8cb55c13301d.png)
+![Untitled (1)](https://user-images.githubusercontent.com/113455892/199663770-13f380ae-295c-440d-ac63-3e42ed9cf3e4.png)
+![Untitled (2)](https://user-images.githubusercontent.com/113455892/199663757-681bf538-5003-4788-855d-e65ed36f06b0.png)
+
+
 
 
 

@@ -19,5 +19,7 @@ Clone-Instagram-BE
 
 # 3. Youtube 시연
 
+[![Video Label](https://user-images.githubusercontent.com/113455892/199664977-185be1ba-4acf-4d40-8b15-abae1499dfc0.png)](https://youtu.be/uLR1RNqJ1Mw?t=0s)
 
-<iframe width="560" height="315" src="http://www.youtube.com/embed/6ho4HjvkOeA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
